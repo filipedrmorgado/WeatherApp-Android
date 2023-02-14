@@ -1,0 +1,28 @@
+#b4 /build
+# Android Studio
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+*.iml
+
+# Gradle Wrapper
+/gradle/wrapper/gradle-wrapper.jar
+
+# Keystore files
+*.jks
+*.keystore
+
+# Generated files
+/build/
+/out/
+/target/
+
+# Binary files
+*.apk
+*.aab
+*.dex
+*.jar
+
+# Log files
+*.log

@@ -1,0 +1,43 @@
+# Android Studio
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+*.iml
+
+# Gradle Wrapper
+/gradle/wrapper/gradle-wrapper.jar
+
+# Keystore files
+*.jks
+*.keystore
+
+# Generated files
+/build/
+/out/
+/target/
+
+# Binary files
+*.apk
+*.aab
+*.dex
+*.jar
+
+# Log files
+*.log
+
+#*.iml
+#.gradle
+#/local.properties
+#/.idea/caches
+#/.idea/libraries
+#/.idea/modules.xml
+#/.idea/workspace.xml
+#/.idea/navEditor.xml
+#/.idea/assetWizardSettings.xml
+#.DS_Store
+#/build
+#/captures
+#.externalNativeBuild
+#.cxx
+#local.properties
