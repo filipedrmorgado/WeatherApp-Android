@@ -1,4 +1,4 @@
-package com.filipemorgado.weatherapp_android.ui.main
+package com.filipemorgado.weatherapp_android.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 
