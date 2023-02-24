@@ -7,19 +7,19 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.filipemorgado.weatherapp_android.R
-import com.filipemorgado.weatherapp_android.ui.viewmodels.MainViewModel
+import com.filipemorgado.weatherapp_android.ui.viewmodels.WeatherViewModel
 
 class MainFragment : Fragment() {
 
-    companion object {
+    /*companion object {
         fun newInstance() = MainFragment()
-    }
+    }*/
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: WeatherViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        viewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         // TODO: Use the ViewModel
     }
 
