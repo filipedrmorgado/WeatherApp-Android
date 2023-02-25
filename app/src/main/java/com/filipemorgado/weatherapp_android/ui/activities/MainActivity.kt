@@ -15,14 +15,14 @@ import org.kodein.di.generic.instance
 class MainActivity : AppCompatActivity(), KodeinAware {
 
     override val kodein by kodein()
-    private lateinit var binding: ActivityMainBinding
+    //private lateinit var binding: ActivityMainBinding
 
     private val factory: WeatherViewModelFactory by instance()
     private lateinit var weatherViewModel: WeatherViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Initialize viewmodel
