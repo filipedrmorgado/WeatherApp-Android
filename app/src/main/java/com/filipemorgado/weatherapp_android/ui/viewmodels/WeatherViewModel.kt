@@ -5,7 +5,6 @@ import com.filipemorgado.weatherapp_android.data.repositories.WeatherRepository
 
 class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewModel() {
 
-
     init {
         // Request data from OpenWeather API
     }
