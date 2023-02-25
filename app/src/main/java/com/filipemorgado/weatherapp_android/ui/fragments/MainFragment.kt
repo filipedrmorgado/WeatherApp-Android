@@ -11,16 +11,11 @@ import com.filipemorgado.weatherapp_android.ui.viewmodels.WeatherViewModel
 
 class MainFragment : Fragment() {
 
-    /*companion object {
-        fun newInstance() = MainFragment()
-    }*/
-
     private lateinit var viewModel: WeatherViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
-        // TODO: Use the ViewModel
     }
 
     override fun onCreateView(
@@ -29,5 +24,6 @@ class MainFragment : Fragment() {
     ): View {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
+
 
 }
