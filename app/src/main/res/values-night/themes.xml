@@ -18,4 +18,12 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="IconInColoredCard">
+        <item name="android:tint">@android:color/white</item>
+    </style>
+
+    <style name="SubTextViewInColoredCard">
+        <item name="android:textColor">@color/grey_10</item>
+    </style>
+
 </resources>
