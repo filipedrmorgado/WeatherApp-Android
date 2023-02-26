@@ -18,7 +18,6 @@ class MainFragment : Fragment() {
     private val weatherViewModel: WeatherViewModel by activityViewModels()
 
     private lateinit var multipleDaysRecyclerView: MultipleDaysRecyclerView
-    //private lateinit var
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,8 +25,9 @@ class MainFragment : Fragment() {
     ): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
 
-        // First time setup
+        // Setting up the fragment
         setupUI()
+        setupObservers()
         return binding.root
     }
 
@@ -38,6 +38,9 @@ class MainFragment : Fragment() {
         initializeRecyclerView()
     }
 
+    /**
+     * Initialize Recycler View
+     */
     private fun initializeRecyclerView() {
         multipleDaysRecyclerView = MultipleDaysRecyclerView()
         val mLayoutManager = LinearLayoutManager(
@@ -50,6 +53,13 @@ class MainFragment : Fragment() {
             itemAnimator = DefaultItemAnimator()
             adapter = multipleDaysRecyclerView
         }
+    }
+
+    /**
+     * Observe changes in order to update the screen data
+     */
+    private fun setupObservers() {
+
     }
 
 }
