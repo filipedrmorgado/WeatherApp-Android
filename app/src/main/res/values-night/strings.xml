@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--New Labels-->
-    <string name="current_label">current</string>
+    <string name="current_label">Current Weather Details</string>
     <string name="humidity_label">Humidity</string>
     <string name="wind_label">Wind</string>
     <string name="next_4_days_hourly">Next 4 Days/Hourly</string>
