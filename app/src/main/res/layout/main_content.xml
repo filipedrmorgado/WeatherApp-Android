@@ -16,6 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
             android:text="@string/current_label"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             android:textColor="@color/material_blue"
@@ -112,18 +113,20 @@
                                 android:id="@+id/wind_text_view"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center" />
+                                android:layout_gravity="center"
+                                android:inAnimation="@anim/slide_in_bottom"
+                                android:outAnimation="@anim/slide_out_top"
+                                android:textAppearance="@style/WindSpeedTextView" />
                         </LinearLayout>
                     </LinearLayout>
 
-                    <!--//todo animation-->
-                    <!--<com.airbnb.lottie.LottieAnimationView
+                    <com.airbnb.lottie.LottieAnimationView
                         android:id="@+id/animation_view"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         app:lottie_autoPlay="true"
-                        app:lottie_loop="true" />-->
+                        app:lottie_loop="true" />
 
                 </LinearLayout>
             </LinearLayout>

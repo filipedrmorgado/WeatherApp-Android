@@ -18,19 +18,31 @@ class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewM
 
     init {
         // Request data from OpenWeather API
-        findCityWeatherByName("Coimbra")
+        findCityWeatherByName("California")
+        fourDaysForecast("California")
     }
 
     /**
-     * Initial request
+     * Gets the weather by city name
      */
     private fun findCityWeatherByName(cityName: String) {
         //todo demonstrate a loading while requesting
         viewModelScope.launch {
             val result = weatherRepository.findCityWeatherByName(cityName)
+            _tickFlow.emit(result)
             Log.i("WeatherViewModel", "findCityWeatherByName: result=$result")
         }
+    }
 
+    /**
+     * Gets the forecast for the next 4 days
+     */
+    private fun fourDaysForecast(cityName: String) {
+        //todo demonstrate a loading while requesting
+        viewModelScope.launch {
+            val result = weatherRepository.fourDaysForecast(cityName)
+            Log.i("WeatherViewModel", "fourDaysForecast: result=$result")
+        }
     }
 
 

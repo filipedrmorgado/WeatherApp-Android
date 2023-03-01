@@ -22,6 +22,12 @@ interface ApiInterface {
         @Query("appid") appid: String = API_KEY
     ): Response<WeatherDataResponse>
 
+    @GET("/forecast/weather/hourly")
+    suspend fun fourDaysForecast(
+        @Query("q") cityName: String,
+        @Query("units") units: String = WEATHER_UNIT,
+        @Query("appid") appid: String = API_KEY
+    ): Response<WeatherDataResponse>
 
     companion object {
         operator fun invoke(

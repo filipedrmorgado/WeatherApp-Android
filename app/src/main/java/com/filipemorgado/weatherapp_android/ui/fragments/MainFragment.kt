@@ -2,18 +2,23 @@ package com.filipemorgado.weatherapp_android.ui.fragments
 
 import android.os.Bundle
 import android.util.Log
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.filipemorgado.weatherapp_android.R
 import com.filipemorgado.weatherapp_android.data.model.response.WeatherDataResponse
 import com.filipemorgado.weatherapp_android.databinding.FragmentMainBinding
 import com.filipemorgado.weatherapp_android.ui.adapters.MultipleDaysRecyclerView
 import com.filipemorgado.weatherapp_android.ui.viewmodels.WeatherViewModel
+import com.filipemorgado.weatherapp_android.utils.AppUtils
+import java.util.*
 
 class MainFragment : Fragment() {
 
@@ -39,6 +44,82 @@ class MainFragment : Fragment() {
      */
     private fun setupUI() {
         initializeRecyclerView()
+        setupTextSwitchers()
+        //todo make it dynamic
+        binding.toolbarLayout.cityNameTextView.text = "Coimbra, PT"
+    }
+
+    /**
+     * Setup text Switchers
+     */
+    private fun setupTextSwitchers() {
+        binding.contentMainLayout.tempTextView.setFactory {
+            TextView(
+                ContextThemeWrapper(
+                    context,
+                    R.style.TempTextView
+                ), null, 0
+            )
+        }
+        binding.contentMainLayout.tempTextView.setInAnimation(
+            requireContext(),
+            R.anim.slide_in_right
+        )
+        binding.contentMainLayout.tempTextView.setOutAnimation(
+            requireContext(),
+            R.anim.slide_out_left
+        )
+
+        binding.contentMainLayout.descriptionTextView.setFactory {
+            TextView(
+                ContextThemeWrapper(
+                    context,
+                    R.style.DescriptionTextView
+                ), null, 0
+            )
+        }
+        binding.contentMainLayout.descriptionTextView.setInAnimation(
+            requireContext(),
+            R.anim.slide_in_right
+        )
+        binding.contentMainLayout.descriptionTextView.setOutAnimation(
+            requireContext(),
+            R.anim.slide_out_left
+        )
+
+        binding.contentMainLayout.humidityTextView.setFactory {
+            TextView(
+                ContextThemeWrapper(
+                    context,
+                    R.style.HumidityTextView
+                ), null, 0
+            )
+        }
+        binding.contentMainLayout.humidityTextView.setInAnimation(
+            requireContext(),
+            R.anim.slide_in_bottom
+        )
+        binding.contentMainLayout.humidityTextView.setOutAnimation(
+            requireContext(),
+            R.anim.slide_out_top
+        )
+
+        binding.contentMainLayout.windTextView.setFactory {
+            TextView(
+                ContextThemeWrapper(
+                    context,
+                    R.style.WindSpeedTextView
+                ), null, 0
+            )
+        }
+        binding.contentMainLayout.windTextView.setInAnimation(
+            requireContext(),
+            R.anim.slide_in_bottom
+        )
+        binding.contentMainLayout.windTextView.setOutAnimation(
+            requireContext(),
+            R.anim.slide_out_top
+        )
     }
 
     /**
@@ -74,8 +155,43 @@ class MainFragment : Fragment() {
         when {
             // Update screen data with new info
             result.isSuccess -> {
+                val responseData = result.getOrThrow()
                 Log.i("MainFragment", "dateUpdateReceived: Data updated on the screen")
+                with(binding.contentMainLayout) {
+                    tempTextView.setText(
+                        String.format(
+                            Locale.getDefault(),
+                            "%.0f°",
+                            responseData.main.temp
+                        )
+                    )
+                    descriptionTextView.setText(
+                        String.format(
+                            Locale.getDefault(),
+                            "%s",
+                            responseData.weather.first().description
+                        )
+                    )
+                    humidityTextView.setText(
+                        String.format(
+                            Locale.getDefault(),
+                            "%s%%",
+                            responseData.main.humidity
+                        )
+                    )
+                    windTextView.setText(
+                        String.format(
+                            Locale.getDefault(),
+                            "%s km/hr",
+                            responseData.wind.speed
+                        )
+                    )
+                    animationView.setAnimation(AppUtils.getWeatherAnimation(responseData.weather.first().id))
+                    animationView.playAnimation()
 
+
+                    responseData.weather.first().icon
+                }
             }
             // Error occurred retrieving data
             result.isFailure -> {

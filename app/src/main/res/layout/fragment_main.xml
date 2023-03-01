@@ -26,7 +26,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:layout_gravity="bottom"
-                    app:backgroundTint="@color/white"
+                    app:backgroundTint="@color/colorPrimary"
                     app:navigationIcon="@drawable/ic_menu_black_24dp" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
