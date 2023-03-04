@@ -11,25 +11,19 @@ object AppUtils {
      * @return id of animation json file
      */
     fun getWeatherAnimation(weatherCode: Int): Int {
-        if (weatherCode / 100 == 2) {
-            return R.raw.storm_weather
-        } else if (weatherCode / 100 == 3) {
-            return R.raw.rainy_weather
-        } else if (weatherCode / 100 == 5) {
-            return R.raw.rainy_weather
-        } else if (weatherCode / 100 == 6) {
-            return R.raw.snow_weather
-        } else if (weatherCode / 100 == 7) {
-            return R.raw.unknown
-        } else if (weatherCode == 800) {
-            return R.raw.clear_day
-        } else if (weatherCode == 801) {
-            return R.raw.few_clouds
-        } else if (weatherCode == 803) {
-            return R.raw.broken_clouds
-        } else if (weatherCode / 100 == 8) {
-            return R.raw.cloudy_weather
+        return when (weatherCode) {
+            1000 -> R.raw.clear_day
+            1003 -> R.raw.few_clouds
+            1006, 1030, 1069 -> R.raw.cloudy_weather
+            1009 -> R.raw.broken_clouds
+            1087, 1273, 1276, 1279, 1282 -> R.raw.storm_weather
+            1135, 1147 -> R.raw.mostly_cloudy
+            1063, 1072, 1150, 1153, 1168, 1183, 1186, 1198,
+            1204, 1240, 1249 -> R.raw.rainy_weather
+            1089, 1192, 1195, 1207, 1243, 1246, 1252 -> R.raw.shower_rain
+            1066, 1114, 1117, 1171, 1201, 1210, 1213, 1216,
+            1219, 1222, 1225, 1237, 1255, 1258, 1261, 1264 -> R.raw.snow_weather
+            else -> R.raw.unknown
         }
-        return R.raw.unknown
     }
 }
