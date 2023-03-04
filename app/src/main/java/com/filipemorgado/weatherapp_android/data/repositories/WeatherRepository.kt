@@ -1,6 +1,7 @@
 package com.filipemorgado.weatherapp_android.data.repositories
 
 import android.util.Log
+import com.filipemorgado.weatherapp_android.data.model.response.RealtimeForecastDataResponse
 import com.filipemorgado.weatherapp_android.data.model.response.WeatherDataResponse
 import com.filipemorgado.weatherapp_android.data.network.ApiInterface
 import com.filipemorgado.weatherapp_android.data.network.SafeApiRequest
@@ -11,9 +12,9 @@ class WeatherRepository(
     private val api: ApiInterface,
 ) : SafeApiRequest() {
 
-    suspend fun findCityWeatherByName(cityName: String): Result<WeatherDataResponse> {
+    suspend fun findCityWeatherByName(cityName: String): Result<RealtimeForecastDataResponse> {
         return try {
-            val result = apiRequest { api.findCityWeatherData(cityName) }
+            val result = apiRequest { api.findCityWeatherData(cityName = cityName) }
             Log.d("WeatherRepository", "findCityWeatherByName: result=$result")
 
             // Request was sucessfull

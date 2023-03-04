@@ -13,7 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.filipemorgado.weatherapp_android.R
-import com.filipemorgado.weatherapp_android.data.model.response.WeatherDataResponse
+import com.filipemorgado.weatherapp_android.data.model.response.RealtimeForecastDataResponse
 import com.filipemorgado.weatherapp_android.databinding.FragmentMainBinding
 import com.filipemorgado.weatherapp_android.ui.adapters.MultipleDaysRecyclerView
 import com.filipemorgado.weatherapp_android.ui.viewmodels.WeatherViewModel
@@ -151,7 +151,7 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun dateUpdateReceived(result: Result<WeatherDataResponse>) {
+    private fun dateUpdateReceived(result: Result<RealtimeForecastDataResponse>) {
         when {
             // Update screen data with new info
             result.isSuccess -> {
@@ -162,35 +162,33 @@ class MainFragment : Fragment() {
                         String.format(
                             Locale.getDefault(),
                             "%.0f°",
-                            responseData.main.temp
+                            responseData.current.tempC
                         )
                     )
                     descriptionTextView.setText(
                         String.format(
                             Locale.getDefault(),
                             "%s",
-                            responseData.weather.first().description
+                            responseData.current.condition.text
                         )
                     )
                     humidityTextView.setText(
                         String.format(
                             Locale.getDefault(),
                             "%s%%",
-                            responseData.main.humidity
+                            responseData.current.humidity
                         )
                     )
                     windTextView.setText(
                         String.format(
                             Locale.getDefault(),
                             "%s km/hr",
-                            responseData.wind.speed
+                            responseData.current.windKph
                         )
                     )
-                    animationView.setAnimation(AppUtils.getWeatherAnimation(responseData.weather.first().id))
+                    //todo update according to API image
+                    animationView.setAnimation(AppUtils.getWeatherAnimation(responseData.current.condition.code))
                     animationView.playAnimation()
-
-
-                    responseData.weather.first().icon
                 }
             }
             // Error occurred retrieving data
