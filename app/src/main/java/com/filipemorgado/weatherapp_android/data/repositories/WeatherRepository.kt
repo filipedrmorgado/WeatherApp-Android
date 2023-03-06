@@ -2,7 +2,6 @@ package com.filipemorgado.weatherapp_android.data.repositories
 
 import android.util.Log
 import com.filipemorgado.weatherapp_android.data.model.response.RealtimeForecastDataResponse
-import com.filipemorgado.weatherapp_android.data.model.response.WeatherDataResponse
 import com.filipemorgado.weatherapp_android.data.network.ApiInterface
 import com.filipemorgado.weatherapp_android.data.network.SafeApiRequest
 import com.filipemorgado.weatherapp_android.utils.ApiException
@@ -31,7 +30,7 @@ class WeatherRepository(
         }
     }
 
-    suspend fun fourDaysForecast(cityName: String): Result<WeatherDataResponse> {
+    suspend fun fourDaysForecast(cityName: String): Result<RealtimeForecastDataResponse> {
         return try {
             val result = apiRequest { api.fourDaysForecast(cityName) }
             Log.d("WeatherRepository", "findCityWeatherByName: result=$result")

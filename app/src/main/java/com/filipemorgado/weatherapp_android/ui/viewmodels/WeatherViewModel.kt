@@ -11,19 +11,20 @@ import kotlinx.coroutines.launch
 
 class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewModel() {
 
-    // Backing property to avoid flow emissions from other classes
+    // Flow that keeps up to date the state of the current weather request and its result, success or error.
     private val _tickFlow = MutableSharedFlow<Result<RealtimeForecastDataResponse>>()
     val tickFlow = _tickFlow.asSharedFlow()
 
 
     init {
         // Request data from OpenWeather API
+        //todo make it the saved city data to be requested
         findCityWeatherByName("Coimbra")
         fourDaysForecast("Coimbra")
     }
 
     /**
-     * Gets the weather by city name
+     * Gets the current weather by city name
      */
     private fun findCityWeatherByName(cityName: String) {
         //todo demonstrate a loading while requesting

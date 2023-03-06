@@ -1,7 +1,6 @@
 package com.filipemorgado.weatherapp_android.data.network
 
 import com.filipemorgado.weatherapp_android.data.model.response.RealtimeForecastDataResponse
-import com.filipemorgado.weatherapp_android.data.model.response.WeatherDataResponse
 import com.filipemorgado.weatherapp_android.utils.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -27,7 +26,7 @@ interface ApiInterface {
         @Query("q") cityName: String,
         @Query("units") units: String = WEATHER_UNIT,
         @Query("appid") appid: String = API_KEY
-    ): Response<WeatherDataResponse>
+    ): Response<RealtimeForecastDataResponse>
 
     companion object {
         operator fun invoke(

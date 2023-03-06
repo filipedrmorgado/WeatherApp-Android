@@ -186,7 +186,7 @@ class MainFragment : Fragment() {
                             responseData.current.windKph
                         )
                     )
-                    //todo update according to API image
+                    //todo update with more accuracy regarding images, according to API details of the weather
                     animationView.setAnimation(AppUtils.getWeatherAnimation(responseData.current.condition.code))
                     animationView.playAnimation()
                 }

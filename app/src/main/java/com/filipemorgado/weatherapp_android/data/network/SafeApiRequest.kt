@@ -1,5 +1,6 @@
 package com.filipemorgado.weatherapp_android.data.network
 
+import android.util.Log
 import com.filipemorgado.weatherapp_android.utils.ApiException
 import org.json.JSONException
 import org.json.JSONObject
@@ -18,6 +19,7 @@ abstract class SafeApiRequest {
                 try {
                     message.append(JSONObject(it).getString("message"))
                 } catch (e: JSONException) {
+                    Log.e("SafeApiRequest", "apiRequest: JSONException=${e.message}")
                 }
             }
             throw ApiException(message.toString())
