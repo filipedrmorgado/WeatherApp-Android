@@ -1,6 +1,7 @@
 package com.filipemorgado.weatherapp_android.data.repositories
 
 import android.util.Log
+import com.filipemorgado.weatherapp_android.data.model.response.NextDaysForecastResponse
 import com.filipemorgado.weatherapp_android.data.model.response.RealtimeForecastDataResponse
 import com.filipemorgado.weatherapp_android.data.network.ApiInterface
 import com.filipemorgado.weatherapp_android.data.network.SafeApiRequest
@@ -30,21 +31,21 @@ class WeatherRepository(
         }
     }
 
-    suspend fun fourDaysForecast(cityName: String): Result<RealtimeForecastDataResponse> {
+    suspend fun getCityNextDaysForecast(cityName: String): Result<NextDaysForecastResponse> {
         return try {
-            val result = apiRequest { api.fourDaysForecast(cityName) }
-            Log.d("WeatherRepository", "findCityWeatherByName: result=$result")
+            val result = apiRequest { api.getCityNextDaysForecast(cityName = cityName) }
+            Log.d("WeatherRepository", "getCityNextDaysForecast: result=$result")
 
             // Request was sucessfull
             return Result.success(result)
         } catch (e: ApiException) {
-            Log.e("WeatherRepository", "findCityWeatherByName: ApiException=${e.message}")
+            Log.e("WeatherRepository", "getCityNextDaysForecast: ApiException=${e.message}")
             Result.failure(e)
         } catch (e: NoInternetException) {
-            Log.e("WeatherRepository", "findCityWeatherByName: NoInternetException=${e.message}")
+            Log.e("WeatherRepository", "getCityNextDaysForecast: NoInternetException=${e.message}")
             Result.failure(e)
         } catch (e: Exception) {
-            Log.e("WeatherRepository", "findCityWeatherByName: Exception=${e.message}")
+            Log.e("WeatherRepository", "getCityNextDaysForecast: Exception=${e.message}")
             Result.failure(e)
         }
     }

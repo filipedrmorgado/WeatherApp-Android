@@ -1,5 +1,6 @@
 package com.filipemorgado.weatherapp_android.data.network
 
+import com.filipemorgado.weatherapp_android.data.model.response.NextDaysForecastResponse
 import com.filipemorgado.weatherapp_android.data.model.response.RealtimeForecastDataResponse
 import com.filipemorgado.weatherapp_android.utils.*
 import okhttp3.OkHttpClient
@@ -21,12 +22,12 @@ interface ApiInterface {
         @Query("q") cityName: String,
     ): Response<RealtimeForecastDataResponse>
 
-    @GET("/forecast/weather/hourly")
-    suspend fun fourDaysForecast(
+    @GET("forecast.json?")
+    suspend fun getCityNextDaysForecast(
+        @Query("key") appid: String = WEATHERAPI_KEY,
         @Query("q") cityName: String,
-        @Query("units") units: String = WEATHER_UNIT,
-        @Query("appid") appid: String = API_KEY
-    ): Response<RealtimeForecastDataResponse>
+        @Query("days") days: Int = FORECAST_DAYS,
+    ): Response<NextDaysForecastResponse>
 
     companion object {
         operator fun invoke(

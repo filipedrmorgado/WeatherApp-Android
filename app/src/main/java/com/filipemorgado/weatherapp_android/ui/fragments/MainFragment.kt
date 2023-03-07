@@ -144,9 +144,16 @@ class MainFragment : Fragment() {
      */
     private fun setupObservers() {
         lifecycleScope.launchWhenCreated {
-            weatherViewModel.tickFlow.collect {
+            weatherViewModel.currentWeatherFlow.collect {
                 dateUpdateReceived(it)
-                Log.i("MainFragment", "setupObservers: Received Data Update. it=$it")
+                Log.i("MainFragment", "setupObservers: Received Current Weather Data to Update.")
+            }
+        }
+
+        lifecycleScope.launchWhenCreated {
+            weatherViewModel.forecastWeatherFlow.collect {
+                //todo update recycler
+                Log.i("MainFragment", "setupObservers: Received Forecast Weather Data to Update.")
             }
         }
     }
