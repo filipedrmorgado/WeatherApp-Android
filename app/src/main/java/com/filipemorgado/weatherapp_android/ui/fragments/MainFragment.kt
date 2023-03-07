@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.filipemorgado.weatherapp_android.R
+import com.filipemorgado.weatherapp_android.data.model.response.NextDaysForecastResponse
 import com.filipemorgado.weatherapp_android.data.model.response.RealtimeForecastDataResponse
 import com.filipemorgado.weatherapp_android.databinding.FragmentMainBinding
 import com.filipemorgado.weatherapp_android.ui.adapters.MultipleDaysRecyclerView
@@ -145,64 +146,95 @@ class MainFragment : Fragment() {
     private fun setupObservers() {
         lifecycleScope.launchWhenCreated {
             weatherViewModel.currentWeatherFlow.collect {
-                dateUpdateReceived(it)
+                currentWeatherUpdate(it)
                 Log.i("MainFragment", "setupObservers: Received Current Weather Data to Update.")
             }
         }
 
         lifecycleScope.launchWhenCreated {
             weatherViewModel.forecastWeatherFlow.collect {
-                //todo update recycler
+                forecastWeatherUpdate(it)
                 Log.i("MainFragment", "setupObservers: Received Forecast Weather Data to Update.")
             }
         }
     }
 
-    private fun dateUpdateReceived(result: Result<RealtimeForecastDataResponse>) {
+    private fun currentWeatherUpdate(result: Result<RealtimeForecastDataResponse>) {
         when {
             // Update screen data with new info
             result.isSuccess -> {
-                val responseData = result.getOrThrow()
-                Log.i("MainFragment", "dateUpdateReceived: Data updated on the screen")
-                with(binding.contentMainLayout) {
-                    tempTextView.setText(
-                        String.format(
-                            Locale.getDefault(),
-                            "%.0f°",
-                            responseData.current.tempC
+                try {
+                    val responseData = result.getOrThrow()
+
+                    Log.i("MainFragment", "currentWeatherUpdate: Data updated on the screen")
+                    with(binding.contentMainLayout) {
+                        tempTextView.setText(
+                            String.format(
+                                Locale.getDefault(),
+                                "%.0f°",
+                                responseData.current.tempC
+                            )
                         )
-                    )
-                    descriptionTextView.setText(
-                        String.format(
-                            Locale.getDefault(),
-                            "%s",
-                            responseData.current.condition.text
+                        descriptionTextView.setText(
+                            String.format(
+                                Locale.getDefault(),
+                                "%s",
+                                responseData.current.condition.text
+                            )
                         )
-                    )
-                    humidityTextView.setText(
-                        String.format(
-                            Locale.getDefault(),
-                            "%s%%",
-                            responseData.current.humidity
+                        humidityTextView.setText(
+                            String.format(
+                                Locale.getDefault(),
+                                "%s%%",
+                                responseData.current.humidity
+                            )
                         )
-                    )
-                    windTextView.setText(
-                        String.format(
-                            Locale.getDefault(),
-                            "%s km/hr",
-                            responseData.current.windKph
+                        windTextView.setText(
+                            String.format(
+                                Locale.getDefault(),
+                                "%s km/hr",
+                                responseData.current.windKph
+                            )
                         )
+                        //todo update with more accuracy regarding images, according to API details of the weather
+                        animationView.setAnimation(AppUtils.getWeatherAnimation(responseData.current.condition.code))
+                        animationView.playAnimation()
+                    }
+                } catch (e: Exception) {
+                    // handle the exception
+                    Log.e(
+                        "MainFragment",
+                        "currentWeatherUpdate: responseData exception. e=${e.message}"
                     )
-                    //todo update with more accuracy regarding images, according to API details of the weather
-                    animationView.setAnimation(AppUtils.getWeatherAnimation(responseData.current.condition.code))
-                    animationView.playAnimation()
+                    return
                 }
             }
             // Error occurred retrieving data
             result.isFailure -> {
-                Log.e("MainFragment", "dateUpdateReceived: Error retrieving data.")
+                Log.e("MainFragment", "currentWeatherUpdate: Error retrieving data.")
             }
         }
     }
 
+    private fun forecastWeatherUpdate(result: Result<NextDaysForecastResponse>) {
+        when {
+            result.isSuccess -> {
+                try {
+                    val responseData = result.getOrThrow()
+                    Log.i("MainFragment", "forecastWeatherUpdate: Data updated on the screen")
+
+                } catch (e: Exception) {
+                    // handle the exception
+                    Log.e(
+                        "MainFragment",
+                        "forecastWeatherUpdate: responseData exception. e=${e.message}"
+                    )
+                    return
+                }
+            }
+            result.isFailure -> {
+                Log.e("MainFragment", "forecastWeatherUpdate: Error retrieving data.")
+            }
+        }
+    }
 }
