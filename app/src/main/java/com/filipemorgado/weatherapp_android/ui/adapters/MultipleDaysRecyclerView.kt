@@ -28,6 +28,7 @@ class MultipleDaysRecyclerView : RecyclerView.Adapter<MultipleDaysRecyclerView.V
     fun setData(newWeatherDetail: List<WeatherDetail>) {
         weatherDetailList.clear()
         weatherDetailList.addAll(newWeatherDetail)
+        //todo we should notify only data that actually changed. Improve performance
         notifyDataSetChanged()
     }
 

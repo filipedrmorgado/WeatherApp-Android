@@ -2,6 +2,9 @@ package com.filipemorgado.weatherapp_android.data.model.response
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Next day dataclass to receive data from the API response
+ */
 data class NextDaysForecastResponse(
     @SerializedName("location") val location: Location,
     @SerializedName("current") val current: Current,

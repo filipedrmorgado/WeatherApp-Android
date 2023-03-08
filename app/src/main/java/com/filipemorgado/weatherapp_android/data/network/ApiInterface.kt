@@ -13,8 +13,6 @@ import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
 interface ApiInterface {
-//https://api.openweathermap.org/data/2.5/weather?q=Coimbra&units=metric&appid=$2b143e77fac5930fec440f577ebb21b7
-
 
     @GET("current.json?")
     suspend fun findCityWeatherData(
@@ -37,7 +35,7 @@ interface ApiInterface {
             val okkHttpclient = OkHttpClient.Builder()
                 .addInterceptor(networkConnectionInterceptor)
                 .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                .connectTimeout(1, TimeUnit.MINUTES)
+                .connectTimeout(1, TimeUnit.MINUTES) //todo add constants for timeouts.
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
                 .build()
