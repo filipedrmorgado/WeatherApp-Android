@@ -26,4 +26,17 @@ object AppUtils {
             else -> R.raw.unknown
         }
     }
+
+    val DAYS_OF_WEEK = arrayOf(
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+    )
+
+    //val RECYCLER_COLORS = arrayOf()
+
 }

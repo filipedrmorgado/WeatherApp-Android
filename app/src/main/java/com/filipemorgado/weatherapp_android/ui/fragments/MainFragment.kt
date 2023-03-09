@@ -223,6 +223,7 @@ class MainFragment : Fragment() {
                     val responseData = result.getOrThrow()
                     Log.i("MainFragment", "forecastWeatherUpdate: Data updated on the screen")
 
+                    multipleDaysRecyclerView.setData(responseData.forecast.forecastDay)
                 } catch (e: Exception) {
                     // handle the exception
                     Log.e(
