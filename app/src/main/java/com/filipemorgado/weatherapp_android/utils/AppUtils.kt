@@ -37,6 +37,12 @@ object AppUtils {
         "Saturday"
     )
 
-    //val RECYCLER_COLORS = arrayOf()
+    val RECYCLER_COLORS = arrayOf(
+        R.color.babyGreen,
+        R.color.colorAccent,
+        R.color.orange,
+        R.color.babyBlue,
+        R.color.red,
+    )
 
 }

@@ -12,4 +12,10 @@
     <color name="colorPrimaryDarkNight">#141d26</color>
     <color name="scrim">#99323232</color>
 
+    <!--Recycler Colors-->
+    <color name="babyGreen">#30e1b6</color>
+    <color name="orange">#ffb130</color>
+    <color name="babyBlue">#219cf6</color>
+    <color name="red">#dc2623</color>
+    <color name="blue">#2366f3</color>
 </resources>
