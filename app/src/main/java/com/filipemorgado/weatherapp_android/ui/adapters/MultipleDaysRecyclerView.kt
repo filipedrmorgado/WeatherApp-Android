@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.RecyclerView
-import com.filipemorgado.weatherapp_android.data.model.response.ForecastDay
+import com.filipemorgado.weatherapp_android.data.model.response.ForecastDayData
 import com.filipemorgado.weatherapp_android.databinding.WeatherDayItemBinding
 import com.filipemorgado.weatherapp_android.utils.ALPHA_RECYCLER_SHADOW_COLOR
 import com.filipemorgado.weatherapp_android.utils.AppUtils
@@ -18,7 +18,7 @@ import java.util.*
 class MultipleDaysRecyclerView : RecyclerView.Adapter<MultipleDaysRecyclerView.ViewHolder>() {
 
     // Hosts every forecast day details to populate the recycler
-    private val weatherDetailList = ArrayList<ForecastDay>()
+    private val weatherDetailList = ArrayList<ForecastDayData>()
     private val calendar = Calendar.getInstance()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = WeatherDayItemBinding.inflate(
@@ -35,7 +35,7 @@ class MultipleDaysRecyclerView : RecyclerView.Adapter<MultipleDaysRecyclerView.V
 
     override fun getItemCount(): Int = weatherDetailList.size
 
-    fun setData(newWeatherDetail: List<ForecastDay>) {
+    fun setData(newWeatherDetail: List<ForecastDayData>) {
         weatherDetailList.clear()
         weatherDetailList.addAll(newWeatherDetail)
         //todo we should notify only data that actually changed. Improve performance
@@ -45,15 +45,17 @@ class MultipleDaysRecyclerView : RecyclerView.Adapter<MultipleDaysRecyclerView.V
     inner class ViewHolder(private val binding: WeatherDayItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bindItems(forecastDayDetails: ForecastDay, position: Int) {
+        fun bindItems(forecastDayDataDetails: ForecastDayData, position: Int) {
             binding.apply {
-                this.minTempTextView.text = String.format("%.0f°",forecastDayDetails.day.mintempC)
-                this.maxTempTextView.text = String.format("%.0f°",forecastDayDetails.day.maxtempC)
-                this.tempTextView.text = String.format("%.0f°",forecastDayDetails.day.avgtempC)
+                this.minTempTextView.text = String.format("%.0f°",forecastDayDataDetails.day.mintemp_c)
+                this.maxTempTextView.text = String.format("%.0f°",forecastDayDataDetails.day.maxtemp_c)
+                this.tempTextView.text = String.format("%.0f°",forecastDayDataDetails.day.avgtemp_c)
                 // Sets weekdays names
-                settingWeekdayText(forecastDayDetails.dateEpoch)
+                settingWeekdayText(forecastDayDataDetails.date_epoch)
                 // Sets card colors
                 settingColors(position)
+                //responseData.current.condition.code
+                AppUtils.setWeatherIcon(binding.root.context, binding.weatherImageView,forecastDayDataDetails.day.condition.code)
             }
         }
 

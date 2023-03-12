@@ -1,82 +1,135 @@
 package com.filipemorgado.weatherapp_android.data.model.response
 
-import com.google.gson.annotations.SerializedName
-
 /**
  * Next day dataclass to receive data from the API response
  */
 data class NextDaysForecastResponse(
-    @SerializedName("location") val location: Location,
-    @SerializedName("current") val current: Current,
-    @SerializedName("forecast") val forecast: Forecast
+    val location: LocationData,
+    val current: CurrentData,
+    val forecast: ForecastData
 )
 
-data class Location(
-    @SerializedName("name") val name: String,
-    @SerializedName("region") val region: String,
-    @SerializedName("country") val country: String,
-    @SerializedName("lat") val lat: Double,
-    @SerializedName("lon") val lon: Double,
-    @SerializedName("tz_id") val tzId: String,
-    @SerializedName("localtime_epoch") val localtimeEpoch: Long,
-    @SerializedName("localtime") val localtime: String
+data class LocationData(
+    val name: String,
+    val region: String,
+    val country: String,
+    val lat: Double,
+    val lon: Double,
+    val tz_id: String,
+    val localtime_epoch: Long,
+    val localtime: String
 )
 
-data class Current(
-    @SerializedName("last_updated_epoch") val lastUpdatedEpoch: Long,
-    @SerializedName("last_updated") val lastUpdated: String,
-    @SerializedName("temp_c") val tempC: Double,
-    @SerializedName("temp_f") val tempF: Double,
-    @SerializedName("is_day") val isDay: Int,
-    @SerializedName("condition") val condition: Condition,
-    @SerializedName("wind_mph") val windMph: Double,
-    @SerializedName("wind_kph") val windKph: Double,
-    @SerializedName("wind_degree") val windDegree: Int,
-    @SerializedName("wind_dir") val windDir: String,
-    @SerializedName("pressure_mb") val pressureMb: Double,
-    @SerializedName("pressure_in") val pressureIn: Double,
-    @SerializedName("precip_mm") val precipMm: Double,
-    @SerializedName("precip_in") val precipIn: Double,
-    @SerializedName("humidity") val humidity: Int,
-    @SerializedName("cloud") val cloud: Int,
-    @SerializedName("feelslike_c") val feelslikeC: Double,
-    @SerializedName("feelslike_f") val feelslikeF: Double,
-    @SerializedName("vis_km") val visKm: Double,
-    @SerializedName("vis_miles") val visMiles: Double,
-    @SerializedName("uv") val uv: Double,
-    @SerializedName("gust_mph") val gustMph: Double,
-    @SerializedName("gust_kph") val gustKph: Double
+data class CurrentData(
+    val last_updated_epoch: Long,
+    val last_updated: String,
+    val temp_c: Double,
+    val temp_f: Double,
+    val is_day: Int,
+    val condition: ConditionData,
+    val wind_mph: Double,
+    val wind_kph: Double,
+    val wind_degree: Int,
+    val wind_dir: String,
+    val pressure_mb: Double,
+    val pressure_in: Double,
+    val precip_mm: Double,
+    val precip_in: Double,
+    val humidity: Int,
+    val cloud: Int,
+    val feelslike_c: Double,
+    val feelslike_f: Double,
+    val vis_km: Double,
+    val vis_miles: Double,
+    val uv: Double,
+    val gust_mph: Double,
+    val gust_kph: Double
 )
 
-data class Forecast(
-    @SerializedName("forecastday") val forecastDay: List<ForecastDay>
+data class ForecastData(
+    val forecastday: List<ForecastDayData>
 )
 
-data class ForecastDay(
-    @SerializedName("date") val date: String,
-    @SerializedName("date_epoch") val dateEpoch: Long,
-    @SerializedName("day") val day: Day
+data class ForecastDayData(
+    val date: String,
+    val date_epoch: Long,
+    val day: DayData,
+    val astro: AstroData,
+    val hour: List<HourData>
 )
 
-data class Day(
-    @SerializedName("maxtemp_c") val maxtempC: Double,
-    @SerializedName("maxtemp_f") val maxtempF: Double,
-    @SerializedName("mintemp_c") val mintempC: Double,
-    @SerializedName("mintemp_f") val mintempF: Double,
-    @SerializedName("avgtemp_c") val avgtempC: Double,
-    @SerializedName("avgtemp_f") val avgtempF: Double,
-    @SerializedName("maxwind_mph") val maxwindMph: Double,
-    @SerializedName("maxwind_kph") val maxwindKph: Double,
-    @SerializedName("totalprecip_mm") val totalprecipMm: Double,
-    @SerializedName("totalprecip_in") val totalprecipIn: Double,
-    @SerializedName("avgvis_km") val avgvisKm: Double,
-    @SerializedName("avgvis_miles") val avgvisMiles: Double,
-    @SerializedName("avghumidity") val avghumidity: Int,
-    @SerializedName("uv") val uv: Double
+data class DayData(
+    val maxtemp_c: Double,
+    val maxtemp_f: Double,
+    val mintemp_c: Double,
+    val mintemp_f: Double,
+    val avgtemp_c: Double,
+    val avgtemp_f: Double,
+    val maxwind_mph: Double,
+    val maxwind_kph: Double,
+    val totalprecip_mm: Double,
+    val totalprecip_in: Double,
+    val totalsnow_cm: Double,
+    val avgvis_km: Double,
+    val avgvis_miles: Double,
+    val avghumidity: Double,
+    val daily_will_it_rain: Int,
+    val daily_chance_of_rain: Int,
+    val daily_will_it_snow: Int,
+    val daily_chance_of_snow: Int,
+    val condition: ConditionData,
+    val uv: Double
 )
 
-data class Condition(
-    @SerializedName("text") val text: String,
-    @SerializedName("icon") val icon: String,
-    @SerializedName("code") val code: Int
+data class AstroData(
+    val sunrise: String,
+    val sunset: String,
+    val moonrise: String,
+    val moonset: String,
+    val moon_phase: String,
+    val moon_illumination: String,
+    val is_moon_up: Int,
+    val is_sun_up: Int
+)
+
+data class HourData(
+   val timeEpoch: Long,
+   val time: String,
+   val tempC: Double,
+   val tempF: Double,
+   val isDay: Int,
+   val condition: ConditionData,
+   val windMph: Double,
+   val windKph: Double,
+   val windDegree: Int,
+   val windDir: String,
+   val pressureMb: Double,
+   val pressureIn: Double,
+   val precipMm: Double,
+   val precipIn: Double,
+   val humidity: Int,
+   val cloud: Int,
+   val feelslikeC: Double,
+   val feelslikeF: Double,
+   val windchillC: Double,
+   val windchillF: Double,
+   val heatindexC: Double,
+   val heatindexF: Double,
+   val dewpointC: Double,
+   val dewpointF: Double,
+   val willItRain: Int,
+   val chanceOfRain: Int,
+   val willItSnow: Int,
+   val chanceOfSnow: Int,
+   val visKm: Double,
+   val visMiles: Double,
+   val gustMph: Double,
+   val gustKph: Double,
+   val uv: Double
+)
+
+data class ConditionData(
+    val text: String,
+    val icon: String,
+    val code: Int
 )

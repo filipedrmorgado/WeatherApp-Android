@@ -19,7 +19,6 @@ import com.filipemorgado.weatherapp_android.databinding.FragmentMainBinding
 import com.filipemorgado.weatherapp_android.ui.adapters.MultipleDaysRecyclerView
 import com.filipemorgado.weatherapp_android.ui.viewmodels.WeatherViewModel
 import com.filipemorgado.weatherapp_android.utils.AppUtils
-import java.util.*
 
 class MainFragment : Fragment() {
 
@@ -168,34 +167,11 @@ class MainFragment : Fragment() {
 
                     Log.i("MainFragment", "currentWeatherUpdate: Data updated on the screen")
                     with(binding.contentMainLayout) {
-                        tempTextView.setText(
-                            String.format(
-                                Locale.getDefault(),
-                                "%.0f°",
-                                responseData.current.tempC
-                            )
-                        )
-                        descriptionTextView.setText(
-                            String.format(
-                                Locale.getDefault(),
-                                "%s",
-                                responseData.current.condition.text
-                            )
-                        )
-                        humidityTextView.setText(
-                            String.format(
-                                Locale.getDefault(),
-                                "%s%%",
-                                responseData.current.humidity
-                            )
-                        )
-                        windTextView.setText(
-                            String.format(
-                                Locale.getDefault(),
-                                "%s km/hr",
-                                responseData.current.windKph
-                            )
-                        )
+                        tempTextView.setText(String.format("%.0f°",responseData.current.tempC))
+                        descriptionTextView.setText(String.format("%s",responseData.current.condition.text))
+                        humidityTextView.setText(String.format("%s%%",responseData.current.humidity))
+                        windTextView.setText(String.format("%s km/hr",responseData.current.windKph))
+
                         //todo update with more accuracy regarding images, according to API details of the weather
                         animationView.setAnimation(AppUtils.getWeatherAnimation(responseData.current.condition.code))
                         animationView.playAnimation()
@@ -223,7 +199,7 @@ class MainFragment : Fragment() {
                     val responseData = result.getOrThrow()
                     Log.i("MainFragment", "forecastWeatherUpdate: Data updated on the screen")
 
-                    multipleDaysRecyclerView.setData(responseData.forecast.forecastDay)
+                    multipleDaysRecyclerView.setData(responseData.forecast.forecastday)
                 } catch (e: Exception) {
                     // handle the exception
                     Log.e(

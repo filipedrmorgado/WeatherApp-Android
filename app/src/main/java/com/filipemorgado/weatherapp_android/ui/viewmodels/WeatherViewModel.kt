@@ -22,8 +22,8 @@ class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewM
     init {
         // Request data from OpenWeather API
         //todo make it the saved city data to be requested
-        findCityWeatherByName("Coimbra")
-        getCityNextDaysForecast("Coimbra")
+        findCityWeatherByName("Paris")
+        getCityNextDaysForecast("Paris")
     }
 
     /**
