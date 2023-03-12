@@ -17,6 +17,7 @@ import java.util.*
 
 class MultipleDaysRecyclerView : RecyclerView.Adapter<MultipleDaysRecyclerView.ViewHolder>() {
 
+    // Hosts every forecast day details to populate the recycler
     private val weatherDetailList = ArrayList<ForecastDay>()
     private val calendar = Calendar.getInstance()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -46,18 +47,24 @@ class MultipleDaysRecyclerView : RecyclerView.Adapter<MultipleDaysRecyclerView.V
 
         fun bindItems(forecastDayDetails: ForecastDay, position: Int) {
             binding.apply {
-                this.minTempTextView.text = forecastDayDetails.day.mintempC.toString()
-                this.maxTempTextView.text = forecastDayDetails.day.maxtempC.toString()
-                this.tempTextView.text = forecastDayDetails.day.avgtempC.toString()
-
-                // Setting weekday //todo bug here, check weekday text.
-                calendar.timeInMillis = forecastDayDetails.dateEpoch
-                val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-                this.dayNameTextView.text = AppUtils.DAYS_OF_WEEK[dayOfWeek]
-
+                this.minTempTextView.text = String.format("%.0f°",forecastDayDetails.day.mintempC)
+                this.maxTempTextView.text = String.format("%.0f°",forecastDayDetails.day.maxtempC)
+                this.tempTextView.text = String.format("%.0f°",forecastDayDetails.day.avgtempC)
+                // Sets weekdays names
+                settingWeekdayText(forecastDayDetails.dateEpoch)
                 // Sets card colors
                 settingColors(position)
             }
+        }
+
+        /**
+         * Sets each weekday name for each card
+         */
+        private fun settingWeekdayText(dateEpoch: Long) {
+            // Multiply by 1000 to convert from seconds to milliseconds
+            calendar.timeInMillis = dateEpoch * 1000L
+            val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+            binding.dayNameTextView.text = AppUtils.DAYS_OF_WEEK[dayOfWeek - 1]
         }
 
         /**
@@ -70,7 +77,7 @@ class MultipleDaysRecyclerView : RecyclerView.Adapter<MultipleDaysRecyclerView.V
 
             Log.d("MultipleDaysRecyclerView","ViewHolder, bindItems: color=$color, colorInfo=$colorInfo, index=${position % RECYCLER_SIZE}")
 
-            binding.cardView.setBackgroundColor(color)
+            binding.cardView.setCardBackgroundColor(color)
             val colors = intArrayOf(Color.TRANSPARENT, alphaColor, Color.TRANSPARENT)
 
             val shape = GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors)
