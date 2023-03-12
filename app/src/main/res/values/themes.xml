@@ -32,14 +32,14 @@
     <!--Text Switchers Style-->
     <style name="TempTextView">
         <item name="android:textSize">70sp</item>
-        <item name="android:textColor">@color/grey_10</item>
+        <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:fontFamily">@font/vazir</item>
     </style>
 
     <style name="DescriptionTextView">
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/grey_10</item>
+        <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:fontFamily">@font/vazir</item>
     </style>
 
@@ -55,5 +55,12 @@
         <item name="android:fontFamily">@font/vazir</item>
     </style>
 
+    <!--Selector Button Option Style-->
+    <style name="ButtonSelectionStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/headers_dark_blue</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
 </resources>

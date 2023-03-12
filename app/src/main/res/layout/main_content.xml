@@ -12,15 +12,9 @@
         android:descendantFocusability="blocksDescendants"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            android:text="@string/current_label"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-            android:textColor="@color/material_blue"
-            android:textStyle="bold" />
+        <include
+            android:id="@+id/currentWeatherSelector"
+            layout="@layout/current_weather_selector" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/todayMaterialCard"
@@ -145,12 +139,13 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/next_4_days_hourly"
+                android:text="@string/next_5_days_hourly"
+                android:textColor="@color/headers_dark_blue"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
             <View
                 android:layout_width="0dp"
-                android:layout_height="@dimen/spacing_medium" />
+                android:layout_height="@dimen/spacing_middle" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"

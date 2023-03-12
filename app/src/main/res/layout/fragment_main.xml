@@ -12,14 +12,14 @@
             android:id="@+id/toolbarLayout"
             layout="@layout/toolbar" />
 
-        <include
-            android:id="@+id/contentMainLayout"
-            layout="@layout/main_content" />
-
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/bootomBarCoordinatorLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+                <include
+                    android:id="@+id/contentMainLayout"
+                    layout="@layout/main_content" />
 
                 <com.google.android.material.bottomappbar.BottomAppBar
                     android:id="@+id/bar"
@@ -28,7 +28,6 @@
                     android:layout_gravity="bottom"
                     app:backgroundTint="@color/colorPrimary"
                     app:navigationIcon="@drawable/ic_menu_black_24dp" />
-
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <!--<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

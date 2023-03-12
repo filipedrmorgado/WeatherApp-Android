@@ -1,5 +1,7 @@
 package com.filipemorgado.weatherapp_android.ui.fragments
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.ContextThemeWrapper
@@ -7,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -47,79 +50,37 @@ class MainFragment : Fragment() {
         setupTextSwitchers()
         //todo make it dynamic
         binding.toolbarLayout.cityNameTextView.text = "Coimbra, PT"
+        setupInitialButtonSelectorUI()
+    }
+
+    private fun setupInitialButtonSelectorUI() {
+        val color = ContextCompat.getColor(requireContext(),R.color.button_background_grey)
+        val btnTextColor = ContextCompat.getColor(requireContext(),R.color.material_blue)
+        binding.contentMainLayout.currentWeatherSelector.todaySelector.backgroundTintList = ColorStateList.valueOf(color)
+        binding.contentMainLayout.currentWeatherSelector.todaySelector.setTextColor(btnTextColor)
+        binding.contentMainLayout.currentWeatherSelector.tomorrowSelector.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
+        binding.contentMainLayout.currentWeatherSelector.nextWeekSelector.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
     }
 
     /**
      * Setup text Switchers
      */
     private fun setupTextSwitchers() {
-        binding.contentMainLayout.tempTextView.setFactory {
-            TextView(
-                ContextThemeWrapper(
-                    context,
-                    R.style.TempTextView
-                ), null, 0
-            )
-        }
-        binding.contentMainLayout.tempTextView.setInAnimation(
-            requireContext(),
-            R.anim.slide_in_right
-        )
-        binding.contentMainLayout.tempTextView.setOutAnimation(
-            requireContext(),
-            R.anim.slide_out_left
-        )
+        binding.contentMainLayout.tempTextView.setFactory { TextView(ContextThemeWrapper(context,R.style.TempTextView), null, 0) }
+        binding.contentMainLayout.tempTextView.setInAnimation(context,R.anim.slide_in_right)
+        binding.contentMainLayout.tempTextView.setOutAnimation(context,R.anim.slide_out_left)
 
-        binding.contentMainLayout.descriptionTextView.setFactory {
-            TextView(
-                ContextThemeWrapper(
-                    context,
-                    R.style.DescriptionTextView
-                ), null, 0
-            )
-        }
-        binding.contentMainLayout.descriptionTextView.setInAnimation(
-            requireContext(),
-            R.anim.slide_in_right
-        )
-        binding.contentMainLayout.descriptionTextView.setOutAnimation(
-            requireContext(),
-            R.anim.slide_out_left
-        )
+        binding.contentMainLayout.descriptionTextView.setFactory { TextView(ContextThemeWrapper(context, R.style.DescriptionTextView), null, 0) }
+        binding.contentMainLayout.descriptionTextView.setInAnimation(context, R.anim.slide_in_right)
+        binding.contentMainLayout.descriptionTextView.setOutAnimation(context, R.anim.slide_out_left)
 
-        binding.contentMainLayout.humidityTextView.setFactory {
-            TextView(
-                ContextThemeWrapper(
-                    context,
-                    R.style.HumidityTextView
-                ), null, 0
-            )
-        }
-        binding.contentMainLayout.humidityTextView.setInAnimation(
-            requireContext(),
-            R.anim.slide_in_bottom
-        )
-        binding.contentMainLayout.humidityTextView.setOutAnimation(
-            requireContext(),
-            R.anim.slide_out_top
-        )
+        binding.contentMainLayout.humidityTextView.setFactory { TextView(ContextThemeWrapper(context, R.style.HumidityTextView), null, 0) }
+        binding.contentMainLayout.humidityTextView.setInAnimation(context, R.anim.slide_in_bottom)
+        binding.contentMainLayout.humidityTextView.setOutAnimation(context, R.anim.slide_out_top)
 
-        binding.contentMainLayout.windTextView.setFactory {
-            TextView(
-                ContextThemeWrapper(
-                    context,
-                    R.style.WindSpeedTextView
-                ), null, 0
-            )
-        }
-        binding.contentMainLayout.windTextView.setInAnimation(
-            requireContext(),
-            R.anim.slide_in_bottom
-        )
-        binding.contentMainLayout.windTextView.setOutAnimation(
-            requireContext(),
-            R.anim.slide_out_top
-        )
+        binding.contentMainLayout.windTextView.setFactory { TextView(ContextThemeWrapper(context, R.style.WindSpeedTextView), null, 0) }
+        binding.contentMainLayout.windTextView.setInAnimation(context, R.anim.slide_in_bottom)
+        binding.contentMainLayout.windTextView.setOutAnimation(context, R.anim.slide_out_top)
     }
 
     /**
@@ -178,10 +139,7 @@ class MainFragment : Fragment() {
                     }
                 } catch (e: Exception) {
                     // handle the exception
-                    Log.e(
-                        "MainFragment",
-                        "currentWeatherUpdate: responseData exception. e=${e.message}"
-                    )
+                    Log.e("MainFragment", "currentWeatherUpdate: responseData exception. e=${e.message}")
                     return
                 }
             }
@@ -198,14 +156,10 @@ class MainFragment : Fragment() {
                 try {
                     val responseData = result.getOrThrow()
                     Log.i("MainFragment", "forecastWeatherUpdate: Data updated on the screen")
-
                     multipleDaysRecyclerView.setData(responseData.forecast.forecastday)
                 } catch (e: Exception) {
                     // handle the exception
-                    Log.e(
-                        "MainFragment",
-                        "forecastWeatherUpdate: responseData exception. e=${e.message}"
-                    )
+                    Log.e("MainFragment","forecastWeatherUpdate: responseData exception. e=${e.message}")
                     return
                 }
             }

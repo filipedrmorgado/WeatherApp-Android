@@ -5,12 +5,14 @@
     <color name="colorPrimaryDark">#dddddd</color>
     <color name="colorAccent">#D81B60</color>
     <color name="overlay_dark_50">#40000000</color>
-    <color name="material_blue">#6e62ec</color>
+    <color name="material_blue">#6456e9</color>
+    <color name="headers_dark_blue">#1e1b57</color>
     <color name="grey_10">#e6e6e6</color>
     <color name="green_success">#155724</color>
     <color name="colorPrimaryNight">#263238</color>
     <color name="colorPrimaryDarkNight">#141d26</color>
     <color name="scrim">#99323232</color>
+    <color name="button_background_grey">#f7f6ff</color>
 
     <!--Recycler Colors-->
     <color name="babyGreen">#30e1b6</color>

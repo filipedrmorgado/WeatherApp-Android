@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/spacing_middle"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/todaySelector"
+            android:layout_width="@dimen/today_selector_width"
+            android:layout_height="@dimen/selectors_height"
+            style="@style/ButtonSelectionStyle"
+            android:padding="0dp"
+            android:text="@string/today_selector"
+            android:background="@drawable/selector_shape" />
+
+        <Button
+            android:id="@+id/tomorrowSelector"
+            android:layout_width="@dimen/tomorrow_selector_width"
+            android:layout_height="@dimen/selectors_height"
+            style="@style/ButtonSelectionStyle"
+            android:layout_margin="5dp"
+            android:padding="0dp"
+            android:text="@string/tomorrow_selector"
+            android:textStyle="bold"
+            android:background="@drawable/selector_shape" />
+
+        <Button
+            android:id="@+id/nextWeekSelector"
+            android:layout_width="@dimen/next_week_selector_width"
+            android:layout_height="@dimen/selectors_height"
+            style="@style/ButtonSelectionStyle"
+            android:padding="0dp"
+            android:text="@string/next_week_selector"
+            android:background="@drawable/selector_shape" />
+
+</LinearLayout>
