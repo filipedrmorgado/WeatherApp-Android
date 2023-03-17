@@ -54,7 +54,6 @@ class MultipleDaysRecyclerView : RecyclerView.Adapter<MultipleDaysRecyclerView.V
                 settingWeekdayText(forecastDayDataDetails.date_epoch)
                 // Sets card colors
                 settingColors(position)
-                //responseData.current.condition.code
                 AppUtils.setWeatherIcon(binding.root.context, binding.weatherImageView,forecastDayDataDetails.day.condition.code)
             }
         }
