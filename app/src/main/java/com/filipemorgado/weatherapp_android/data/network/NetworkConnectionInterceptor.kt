@@ -1,6 +1,5 @@
 package com.filipemorgado.weatherapp_android.data.network
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -20,7 +19,6 @@ class NetworkConnectionInterceptor(
         return chain.proceed(chain.request())
     }
 
-    @SuppressLint("MissingPermission")
     private fun isInternetAvailable(): Boolean {
         var result = false
         val connectivityManager =

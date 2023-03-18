@@ -20,6 +20,7 @@ class MultipleDaysRecyclerView : RecyclerView.Adapter<MultipleDaysRecyclerView.V
     // Hosts every forecast day details to populate the recycler
     private val weatherDetailList = ArrayList<ForecastDayData>()
     private val calendar = Calendar.getInstance()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = WeatherDayItemBinding.inflate(
             LayoutInflater.from(parent.context),
