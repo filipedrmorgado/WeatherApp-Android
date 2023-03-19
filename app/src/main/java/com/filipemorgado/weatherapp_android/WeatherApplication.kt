@@ -22,7 +22,6 @@ class WeatherApplication : Application(), KodeinAware {
         bind() from singleton { ApiInterface(instance()) }
         bind() from singleton { WeatherRepository(instance() /*instance()*/) }
 
-
         bind() from provider { WeatherViewModelFactory(instance()) }
         //bind() from provider { WeatherDatabase(instance()) }
     }
