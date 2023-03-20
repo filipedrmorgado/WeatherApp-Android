@@ -17,7 +17,7 @@ class WeatherRepository(
             val result = apiRequest { api.findCityWeatherData(cityName = cityName) }
             Log.d("WeatherRepository", "findCityWeatherByName: result=$result")
 
-            // Request was sucessfull
+            // Request was successful
             return Result.success(result)
         } catch (e: ApiException) {
             Log.e("WeatherRepository", "findCityWeatherByName: ApiException=${e.message}")
@@ -36,7 +36,7 @@ class WeatherRepository(
             val result = apiRequest { api.getCityNextDaysForecast(cityName = cityName) }
             Log.d("WeatherRepository", "getCityNextDaysForecast: result=$result")
 
-            // Request was sucessfull
+            // Request was successful
             return Result.success(result)
         } catch (e: ApiException) {
             Log.e("WeatherRepository", "getCityNextDaysForecast: ApiException=${e.message}")

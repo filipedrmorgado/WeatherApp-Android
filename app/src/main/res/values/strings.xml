@@ -12,4 +12,5 @@
     <string name="today_selector">Today</string>
     <string name="tomorrow_selector">Tomorrow</string>
     <string name="next_week_selector">Next Week</string>
+    <string name="no_internet_exception">Make sure you have an active data connection</string>
 </resources>

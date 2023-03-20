@@ -16,13 +16,13 @@ interface ApiInterface {
 
     @GET("current.json?")
     suspend fun findCityWeatherData(
-        @Query("key") appid: String = WEATHERAPI_KEY,
+        @Query("key") appid: String = WEATHER_API_KEY,
         @Query("q") cityName: String,
     ): Response<RealtimeForecastDataResponse>
 
     @GET("forecast.json?")
     suspend fun getCityNextDaysForecast(
-        @Query("key") appid: String = WEATHERAPI_KEY,
+        @Query("key") appid: String = WEATHER_API_KEY,
         @Query("q") cityName: String,
         @Query("days") days: Int = FORECAST_DAYS,
     ): Response<NextDaysForecastResponse>
@@ -42,7 +42,7 @@ interface ApiInterface {
 
             return Retrofit.Builder()
                 .client(okkHttpclient)
-                .baseUrl(WEATHERAPI_SERVER_URL)
+                .baseUrl(WEATHER_API_SERVER_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(ApiInterface::class.java)

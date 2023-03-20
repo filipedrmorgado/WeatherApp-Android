@@ -25,5 +25,4 @@ class WeatherApplication : Application(), KodeinAware {
         bind() from provider { WeatherViewModelFactory(instance()) }
         //bind() from provider { WeatherDatabase(instance()) }
     }
-
 }
