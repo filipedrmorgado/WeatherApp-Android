@@ -1,11 +1,19 @@
 package com.filipemorgado.weatherapp_android.utils
 
 import android.content.Context
+import android.view.animation.AnimationUtils
+import android.view.animation.Interpolator
 import android.widget.ImageView
+import androidx.annotation.CheckResult
+import androidx.annotation.ColorInt
+import androidx.annotation.FloatRange
+import androidx.annotation.IntRange
 import com.bumptech.glide.Glide
 import com.filipemorgado.weatherapp_android.R
 
 object AppUtils {
+
+    private var fastOutSlowIn: Interpolator? = null
 
     /**
      * Get animation file according to weather status code
@@ -72,5 +80,53 @@ object AppUtils {
         R.color.babyBlue,
         R.color.red,
     )
+
+    /**
+     * Determine if the navigation bar will be on the bottom of the screen, based on logic in
+     * PhoneWindowManager.
+     */
+    fun isNavBarOnBottom(context: Context): Boolean {
+        val res = context.resources
+        val cfg = context.resources.configuration
+        val dm = res.displayMetrics
+        val canMove = dm.widthPixels != dm.heightPixels &&
+                cfg.smallestScreenWidthDp < 600
+        return !canMove || dm.widthPixels < dm.heightPixels
+    }
+
+    fun getFastOutSlowInInterpolator(context: Context?): Interpolator? {
+        if (fastOutSlowIn == null) {
+            fastOutSlowIn =
+                AnimationUtils.loadInterpolator(
+                    context,
+                    android.R.interpolator.fast_out_slow_in
+                )
+        }
+        return fastOutSlowIn
+    }
+
+    /**
+     * Set the alpha component of `color` to be `alpha`.
+     */
+    @CheckResult
+    @ColorInt
+    fun modifyAlpha(
+        @ColorInt color: Int,
+        @IntRange(from = 0, to = 255) alpha: Int
+    ): Int {
+        return color and 0x00ffffff or (alpha shl 24)
+    }
+
+    /**
+     * Set the alpha component of `color` to be `alpha`.
+     */
+    @CheckResult
+    @ColorInt
+    fun modifyAlpha(
+        @ColorInt color: Int,
+        @FloatRange(from = 0.0, to = 1.0) alpha: Float
+    ): Int {
+        return modifyAlpha(color, (255f * alpha).toInt())
+    }
 
 }
