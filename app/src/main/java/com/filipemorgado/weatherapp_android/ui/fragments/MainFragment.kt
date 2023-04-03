@@ -1,5 +1,6 @@
 package com.filipemorgado.weatherapp_android.ui.fragments
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -19,9 +20,12 @@ import com.filipemorgado.weatherapp_android.R
 import com.filipemorgado.weatherapp_android.data.model.response.NextDaysForecastResponse
 import com.filipemorgado.weatherapp_android.data.model.response.RealtimeForecastDataResponse
 import com.filipemorgado.weatherapp_android.databinding.FragmentMainBinding
+import com.filipemorgado.weatherapp_android.ui.activities.HourlyActivity
 import com.filipemorgado.weatherapp_android.ui.adapters.MultipleDaysRecyclerView
 import com.filipemorgado.weatherapp_android.ui.viewmodels.WeatherViewModel
 import com.filipemorgado.weatherapp_android.utils.AppUtils
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 
 class MainFragment : Fragment() {
 
@@ -104,17 +108,25 @@ class MainFragment : Fragment() {
      * Observe changes in order to update the screen data
      */
     private fun setupObservers() {
-        lifecycleScope.launchWhenCreated {
+        lifecycleScope.launch {
             weatherViewModel.currentWeatherFlow.collect {
                 currentWeatherUpdate(it)
                 Log.i("MainFragment", "setupObservers: Received Current Weather Data to Update.")
             }
         }
 
-        lifecycleScope.launchWhenCreated {
+        lifecycleScope.launch {
             weatherViewModel.forecastWeatherFlow.collect {
                 forecastWeatherUpdate(it)
                 Log.i("MainFragment", "setupObservers: Received Forecast Weather Data to Update.")
+            }
+        }
+
+        binding.contentMainLayout.todayMaterialCard.setOnClickListener {
+            lifecycleScope.launch {
+                val intent = Intent(requireContext(), HourlyActivity::class.java)
+                intent.putExtra("weather-details",weatherViewModel.currentWeatherFlow.firstOrNull())
+                startActivity(intent)
             }
         }
     }
