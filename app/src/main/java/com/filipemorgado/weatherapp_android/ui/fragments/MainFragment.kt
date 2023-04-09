@@ -124,8 +124,13 @@ class MainFragment : Fragment() {
 
         binding.contentMainLayout.todayMaterialCard.setOnClickListener {
             lifecycleScope.launch {
-                val intent = Intent(requireContext(), HourlyActivity::class.java)
-                intent.putExtra("weather-details",weatherViewModel.currentWeatherFlow.firstOrNull())
+                val extraDetailsWeather = weatherViewModel.currentWeatherFlow.firstOrNull()?.getOrNull()
+                val bundle = Bundle().apply {
+                    putSerializable("myDataExtra", extraDetailsWeather)
+                }
+                val intent = Intent(requireContext(), HourlyActivity::class.java).apply {
+                    putExtras(bundle)
+                }
                 startActivity(intent)
             }
         }

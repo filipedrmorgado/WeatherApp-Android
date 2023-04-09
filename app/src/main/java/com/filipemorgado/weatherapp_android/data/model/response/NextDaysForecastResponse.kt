@@ -1,5 +1,7 @@
 package com.filipemorgado.weatherapp_android.data.model.response
 
+import java.io.Serializable
+
 /**
  * Next day dataclass to receive data from the API response
  */
@@ -7,7 +9,7 @@ data class NextDaysForecastResponse(
     val location: LocationData,
     val current: CurrentData,
     val forecast: ForecastData
-)
+) : Serializable
 
 data class LocationData(
     val name: String,

@@ -1,12 +1,14 @@
 package com.filipemorgado.weatherapp_android.data.model.response
 
+import java.io.Serializable
+
 /**
  * Forecast for multiple days dataclass to receive data from the API response
  */
 data class RealtimeForecastDataResponse(
     val location: Location,
     val current: Current
-) {
+) : Serializable {
     data class Location(
         val name: String,
         val region: String,
