@@ -1,6 +1,5 @@
 package com.filipemorgado.weatherapp_android.ui.fragments
 
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -20,11 +19,9 @@ import com.filipemorgado.weatherapp_android.R
 import com.filipemorgado.weatherapp_android.data.model.response.NextDaysForecastResponse
 import com.filipemorgado.weatherapp_android.data.model.response.RealtimeForecastDataResponse
 import com.filipemorgado.weatherapp_android.databinding.FragmentMainBinding
-import com.filipemorgado.weatherapp_android.ui.activities.HourlyActivity
 import com.filipemorgado.weatherapp_android.ui.adapters.MultipleDaysRecyclerView
 import com.filipemorgado.weatherapp_android.ui.viewmodels.WeatherViewModel
 import com.filipemorgado.weatherapp_android.utils.AppUtils
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 class MainFragment : Fragment() {
@@ -124,14 +121,23 @@ class MainFragment : Fragment() {
 
         binding.contentMainLayout.todayMaterialCard.setOnClickListener {
             lifecycleScope.launch {
-                val extraDetailsWeather = weatherViewModel.currentWeatherFlow.firstOrNull()?.getOrNull()
+                Log.i("MainFragment", "setupObservers: ZZZ V1 ")
+                /*val extraDetailsWeather = weatherViewModel.currentWeatherFlow.firstOrNull()?.getOrNull()
                 val bundle = Bundle().apply {
                     putSerializable("myDataExtra", extraDetailsWeather)
-                }
+                }*/
+                Log.i("MainFragment", "setupObservers: ZZZ V2 ")
+                /*
                 val intent = Intent(requireContext(), HourlyActivity::class.java).apply {
                     putExtras(bundle)
-                }
-                startActivity(intent)
+                }*/
+                //startActivity(intent)
+
+                Log.i("MainFragment", "setupObservers: ZZZ V1 ")
+
+                val bottomSheetFragment = HourlyDetailsBottomSheetDialog()
+                bottomSheetFragment.show(parentFragmentManager, "MyBottomSheet")
+
             }
         }
     }
