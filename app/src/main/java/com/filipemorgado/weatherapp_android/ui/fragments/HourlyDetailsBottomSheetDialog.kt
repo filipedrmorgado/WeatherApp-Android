@@ -29,7 +29,8 @@ class HourlyDetailsBottomSheetDialog : BottomSheetDialogFragment() {
         binding.maxTempTextView.text = "25º"
         binding.minTempTextView.text = "-24º"
         binding.tempTextView.text = "15º"
-        binding.cardView.setBackgroundColor(Color.RED)
+        binding.bottomSheetDialog.setBackgroundColor(Color.RED)
+        //binding.cardView.setBackgroundColor(Color.RED)
 
 
         Log.i("MainFragment", "setupObservers: ZZZ V6 ")

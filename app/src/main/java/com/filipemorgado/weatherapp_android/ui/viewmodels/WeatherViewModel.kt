@@ -25,7 +25,7 @@ class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewM
     init {
         // Request data from OpenWeather API
         //todo make it the saved city data to be requested
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val currentWeatherDeferred = async { findCityWeatherByName("Paris") }
             val forecastDeferred = async { getCityNextDaysForecast("Paris") }
 
