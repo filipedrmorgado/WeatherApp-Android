@@ -22,6 +22,14 @@ class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewM
     private val _forecastWeatherFlow = MutableSharedFlow<Result<NextDaysForecastResponse>>()
     val forecastWeatherFlow = _forecastWeatherFlow.asSharedFlow()
 
+    private var _currentWeather: RealtimeForecastDataResponse? = null
+    val currentWeather: RealtimeForecastDataResponse?
+        get() = _currentWeather
+
+    private var _forecastWeather: NextDaysForecastResponse? = null
+    val forecastWeather: NextDaysForecastResponse?
+        get() = _forecastWeather
+
     init {
         // Request data from OpenWeather API
         //todo make it the saved city data to be requested
@@ -39,21 +47,22 @@ class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewM
     /**
      * Gets the current weather by city name
      */
-    private suspend fun findCityWeatherByName(cityName: String) = withContext(Dispatchers.IO)  {
+    private suspend fun findCityWeatherByName(cityName: String) = withContext(Dispatchers.IO) {
         //todo demonstrate a loading while requesting
-            val result = weatherRepository.findCityWeatherByName(cityName)
-            _currentWeatherFlow.emit(result)
-            Log.i("WeatherViewModel", "findCityWeatherByName: result=$result")
+        val result = weatherRepository.findCityWeatherByName(cityName)
+        _currentWeatherFlow.emit(result)
+        _currentWeather = result.getOrNull()
+        Log.i("WeatherViewModel", "findCityWeatherByName: result=$result")
     }
 
     /**
      * Gets the forecast for the next 4 days
      */
-    private suspend fun getCityNextDaysForecast(cityName: String) = withContext(Dispatchers.IO)  {
+    private suspend fun getCityNextDaysForecast(cityName: String) = withContext(Dispatchers.IO) {
         //todo demonstrate a loading while requesting
         val result = weatherRepository.getCityNextDaysForecast(cityName)
         _forecastWeatherFlow.emit(result)
-        Log.i("WeatherViewModel", "getCityNextDaysForecast: result=$result")
+        _forecastWeather = result.getOrNull()
     }
 
 

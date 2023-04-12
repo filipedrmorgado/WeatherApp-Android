@@ -58,7 +58,7 @@ data class ForecastDayData(
     val day: DayData,
     val astro: AstroData,
     val hour: List<HourData>
-)
+) : Serializable
 
 data class DayData(
     val maxtemp_c: Double,

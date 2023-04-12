@@ -121,22 +121,18 @@ class MainFragment : Fragment() {
 
         binding.contentMainLayout.todayMaterialCard.setOnClickListener {
             lifecycleScope.launch {
-                Log.i("MainFragment", "setupObservers: ZZZ V1 ")
-                /*val extraDetailsWeather = weatherViewModel.currentWeatherFlow.firstOrNull()?.getOrNull()
-                val bundle = Bundle().apply {
-                    putSerializable("myDataExtra", extraDetailsWeather)
-                }*/
-                Log.i("MainFragment", "setupObservers: ZZZ V2 ")
-                /*
-                val intent = Intent(requireContext(), HourlyActivity::class.java).apply {
-                    putExtras(bundle)
-                }*/
-                //startActivity(intent)
-
-                Log.i("MainFragment", "setupObservers: ZZZ V1 ")
-
                 val bottomSheetFragment = HourlyDetailsBottomSheetDialog()
-                bottomSheetFragment.show(parentFragmentManager, "MyBottomSheet")
+                //todo make it dynamic to the indice clicked
+                val dataToBeSent = weatherViewModel.forecastWeather?.forecast?.forecastday?.get(0)
+                if(dataToBeSent != null) {
+                    val bundle = Bundle().apply {
+                        putSerializable("my_data", dataToBeSent)
+                    }
+                    bottomSheetFragment.arguments = bundle
+                    bottomSheetFragment.show(parentFragmentManager, "MyBottomSheet")
+                }else{
+                    //todo see what to do
+                }
 
             }
         }
@@ -192,3 +188,5 @@ class MainFragment : Fragment() {
         }
     }
 }
+
+
