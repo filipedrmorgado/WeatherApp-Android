@@ -7,6 +7,8 @@
     android:layout_gravity="center_horizontal"
     android:gravity="center_horizontal"
     android:orientation="vertical"
+    android:backgroundTint="@color/red"
+    android:background="@drawable/custom_bottom_sheet_background"
     android:paddingTop="@dimen/spacing_large">
 
     <LinearLayout
@@ -25,7 +27,7 @@
             android:textStyle="bold" />
 
         <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/animation_view"
+            android:id="@+id/bottom_sheet_animation_view"
             android:layout_width="120dp"
             android:layout_height="120dp"
             app:lottie_autoPlay="true"
