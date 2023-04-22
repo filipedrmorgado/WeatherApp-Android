@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!--//todo review performance-->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bottomSheetDialog"
     android:layout_width="match_parent"
@@ -123,7 +124,7 @@
             android:orientation="vertical">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view"
+                android:id="@+id/hourly_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal" />
