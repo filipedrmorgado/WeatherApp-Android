@@ -23,6 +23,7 @@ import com.filipemorgado.weatherapp_android.databinding.FragmentMainBinding
 import com.filipemorgado.weatherapp_android.ui.adapters.MultipleDaysRecyclerView
 import com.filipemorgado.weatherapp_android.ui.viewmodels.WeatherViewModel
 import com.filipemorgado.weatherapp_android.utils.AppUtils
+import com.filipemorgado.weatherapp_android.utils.RECYCLER_SIZE
 import kotlinx.coroutines.launch
 
 class MainFragment : Fragment() {
@@ -100,6 +101,24 @@ class MainFragment : Fragment() {
             itemAnimator = DefaultItemAnimator()
             adapter = multipleDaysRecyclerView
         }
+
+        // Setup on click observers to launch details
+        multipleDaysRecyclerView.setOnItemClickListener(object : MultipleDaysRecyclerView.OnDayDetailsClickListener {
+            override fun onDayClick(position: Int) {
+                val dataToBeSent = weatherViewModel.forecastWeather?.forecast?.forecastday?.get(position)
+                val colorToBeSet = getColorBasedOnIndex(position)
+                launchBottomSheetDialog(dataToBeSent, colorToBeSet)
+            }
+        })
+    }
+
+    /**
+     * Gets the color for the bottom sheet based on index, so it can maintain the same color as the
+     * recycler view in the main view.
+     */
+    private fun getColorBasedOnIndex(position: Int): Int {
+        val colorInfo = AppUtils.RECYCLER_COLORS[position % RECYCLER_SIZE]
+        return ContextCompat.getColor(binding.root.context, colorInfo)
     }
 
     /**
@@ -127,6 +146,7 @@ class MainFragment : Fragment() {
                 launchBottomSheetDialog(dataToBeSent, colorToBeSet)
             }
         }
+
     }
 
     /**

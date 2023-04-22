@@ -20,6 +20,7 @@ class MultipleDaysRecyclerView : RecyclerView.Adapter<MultipleDaysRecyclerView.V
     // Hosts every forecast day details to populate the recycler
     private val weatherDetailList = ArrayList<ForecastDayData>()
     private val calendar = Calendar.getInstance()
+    private var listener: OnDayDetailsClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = WeatherDayItemBinding.inflate(
@@ -32,6 +33,9 @@ class MultipleDaysRecyclerView : RecyclerView.Adapter<MultipleDaysRecyclerView.V
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindItems(weatherDetailList[position], position)
+        holder.itemView.setOnClickListener {
+            listener?.onDayClick(position)
+        }
     }
 
     override fun getItemCount(): Int = weatherDetailList.size
@@ -41,6 +45,10 @@ class MultipleDaysRecyclerView : RecyclerView.Adapter<MultipleDaysRecyclerView.V
         weatherDetailList.addAll(newWeatherDetail)
         //todo we should notify only data that actually changed. Improve performance
         notifyDataSetChanged()
+    }
+
+    fun setOnItemClickListener(listener: OnDayDetailsClickListener) {
+        this.listener = listener
     }
 
     inner class ViewHolder(private val binding: WeatherDayItemBinding) :
@@ -88,4 +96,12 @@ class MultipleDaysRecyclerView : RecyclerView.Adapter<MultipleDaysRecyclerView.V
         }
 
     }
+
+    /**
+     * Interface to open details related to the day
+     */
+    interface OnDayDetailsClickListener {
+        fun onDayClick(position: Int)
+    }
+
 }

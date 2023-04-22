@@ -1,7 +1,6 @@
 package com.filipemorgado.weatherapp_android.ui.adapters
 
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -45,7 +44,6 @@ class HourlyWeatherRecyclerView : RecyclerView.Adapter<HourlyWeatherRecyclerView
 
         fun bindItems(forecastDayDataDetails: HourData) {
             binding.apply {
-                Log.e("ViewHolder", "ViewHolder: forecastDayDataDetails=${forecastDayDataDetails}")
                 this.hourlyTempTextView.text = String.format("%.0f°",forecastDayDataDetails.temp_c)
                 this.hourlyTimeTextView.text = String.format("%s:30",getHourFromTheDay(forecastDayDataDetails.time_epoch))
                 // Sets card colors
