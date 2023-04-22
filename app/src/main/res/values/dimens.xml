@@ -14,4 +14,6 @@
     <dimen name="selectors_height">30dp</dimen>
     <dimen name="tomorrow_selector_width">100dp</dimen>
     <dimen name="next_week_selector_width">110dp</dimen>
+    <dimen name="exit_icon_size">20dp</dimen>
+    <dimen name="line_chart_height">100dp</dimen>
 </resources>

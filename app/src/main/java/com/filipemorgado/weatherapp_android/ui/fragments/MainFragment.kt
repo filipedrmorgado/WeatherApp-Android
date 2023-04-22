@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.filipemorgado.weatherapp_android.R
+import com.filipemorgado.weatherapp_android.data.model.response.ForecastDayData
 import com.filipemorgado.weatherapp_android.data.model.response.NextDaysForecastResponse
 import com.filipemorgado.weatherapp_android.data.model.response.RealtimeForecastDataResponse
 import com.filipemorgado.weatherapp_android.databinding.FragmentMainBinding
@@ -121,20 +122,28 @@ class MainFragment : Fragment() {
 
         binding.contentMainLayout.todayMaterialCard.setOnClickListener {
             lifecycleScope.launch {
-                val bottomSheetFragment = HourlyDetailsBottomSheetDialog()
-                //todo make it dynamic to the indice clicked
                 val dataToBeSent = weatherViewModel.forecastWeather?.forecast?.forecastday?.get(0)
-                if(dataToBeSent != null) {
-                    val bundle = Bundle().apply {
-                        putSerializable("my_data", dataToBeSent)
-                    }
-                    bottomSheetFragment.arguments = bundle
-                    bottomSheetFragment.show(parentFragmentManager, "MyBottomSheet")
-                }else{
-                    //todo see what to do
-                }
-
+                val colorToBeSet = ContextCompat.getColor(requireContext(),R.color.material_blue)
+                launchBottomSheetDialog(dataToBeSent, colorToBeSet)
             }
+        }
+    }
+
+    /**
+     * Launches the BottomSheetDialog with the necessary data
+     */
+    private fun launchBottomSheetDialog(dataToBeSent: ForecastDayData?, colorToBeSet: Int) {
+        val bottomSheetFragment = HourlyDetailsBottomSheetDialog()
+        if(dataToBeSent != null) {
+            val bundle = Bundle().apply {
+                putSerializable("my_data", dataToBeSent)
+                putInt("color", colorToBeSet)
+            }
+            bottomSheetFragment.arguments = bundle
+            bottomSheetFragment.show(parentFragmentManager,"CustomBottomSheet")
+
+        }else{
+            //todo see what to do
         }
     }
 

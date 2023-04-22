@@ -13,4 +13,6 @@
     <string name="tomorrow_selector">Tomorrow</string>
     <string name="next_week_selector">Next Week</string>
     <string name="no_internet_exception">Make sure you have an active data connection</string>
+    <string name="custom_linechart_circle_color">#33b5e5</string>
+    <string name="line_chart_description">8 hour prediction</string>
 </resources>

@@ -36,6 +36,7 @@ class WeatherRepository(
             val result = apiRequest { api.getCityNextDaysForecast(cityName = cityName) }
             Log.d("WeatherRepository", "getCityNextDaysForecast: result=$result")
 
+
             // Request was successful
             return Result.success(result)
         } catch (e: ApiException) {

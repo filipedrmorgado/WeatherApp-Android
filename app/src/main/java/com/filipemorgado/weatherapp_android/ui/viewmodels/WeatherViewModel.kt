@@ -62,6 +62,8 @@ class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewM
         //todo demonstrate a loading while requesting
         val result = weatherRepository.getCityNextDaysForecast(cityName)
         _forecastWeatherFlow.emit(result)
+        Log.i("WeatherViewModel", "ZZZZ getCityNextDaysForecast: _forecastWeatherFlow=${result.getOrNull()}")
+
         _forecastWeather = result.getOrNull()
     }
 
