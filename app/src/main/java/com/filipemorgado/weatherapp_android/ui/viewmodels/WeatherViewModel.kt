@@ -16,10 +16,10 @@ import kotlinx.coroutines.withContext
 class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewModel() {
 
     // Flow that keeps up to date the state of the current weather request and its result, success or error.
-    private val _currentWeatherFlow = MutableSharedFlow<Result<RealtimeForecastDataResponse>>()
+    private val _currentWeatherFlow = MutableSharedFlow<RealtimeForecastDataResponse>()
     val currentWeatherFlow = _currentWeatherFlow.asSharedFlow()
 
-    private val _forecastWeatherFlow = MutableSharedFlow<Result<NextDaysForecastResponse>>()
+    private val _forecastWeatherFlow = MutableSharedFlow<NextDaysForecastResponse>()
     val forecastWeatherFlow = _forecastWeatherFlow.asSharedFlow()
 
     private var _currentWeather: RealtimeForecastDataResponse? = null
@@ -50,9 +50,18 @@ class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewM
     private suspend fun findCityWeatherByName(cityName: String) = withContext(Dispatchers.IO) {
         //todo demonstrate a loading while requesting
         val result = weatherRepository.findCityWeatherByName(cityName)
-        _currentWeatherFlow.emit(result)
+        if(result.isFailure) {
+            Log.e("MainFragment", "currentWeatherUpdate: Error retrieving data.")
+            return@withContext
+        }
+        val responseData = result.getOrNull()
+        if(responseData == null) {
+            Log.e("MainFragment", "currentWeatherUpdate: responseData is null.")
+            return@withContext
+        }
+        // Trigger observers
+        _currentWeatherFlow.emit(responseData)
         _currentWeather = result.getOrNull()
-        Log.i("WeatherViewModel", "findCityWeatherByName: result=$result")
     }
 
     /**
@@ -61,9 +70,18 @@ class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewM
     private suspend fun getCityNextDaysForecast(cityName: String) = withContext(Dispatchers.IO) {
         //todo demonstrate a loading while requesting
         val result = weatherRepository.getCityNextDaysForecast(cityName)
-        _forecastWeatherFlow.emit(result)
-        Log.i("WeatherViewModel", "ZZZZ getCityNextDaysForecast: _forecastWeatherFlow=${result.getOrNull()}")
 
+        if(result.isFailure) {
+            Log.e("MainFragment", "currentWeatherUpdate: Error retrieving data.")
+            return@withContext
+        }
+        val responseData = result.getOrNull()
+        if(responseData == null) {
+            Log.e("MainFragment", "currentWeatherUpdate: responseData is null.")
+            return@withContext
+        }
+        // Trigger observers
+        _forecastWeatherFlow.emit(responseData)
         _forecastWeather = result.getOrNull()
     }
 

@@ -167,54 +167,26 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun currentWeatherUpdate(result: Result<RealtimeForecastDataResponse>) {
-        when {
-            // Update screen data with new info
-            result.isSuccess -> {
-                try {
-                    val responseData = result.getOrThrow()
+    private fun currentWeatherUpdate(resultData: RealtimeForecastDataResponse) {
+        Log.i("MainFragment", "currentWeatherUpdate: Data updated on the screen")
+        // Setup data on screen
+        with(binding.contentMainLayout) {
+            tempTextView.setText(String.format("%.0f°",resultData.current.tempC))
+            descriptionTextView.setText(String.format("%s",resultData.current.condition.text))
+            humidityTextView.setText(String.format("%s%%",resultData.current.humidity))
+            windTextView.setText(String.format("%s km/hr",resultData.current.windKph))
 
-                    Log.i("MainFragment", "currentWeatherUpdate: Data updated on the screen")
-                    with(binding.contentMainLayout) {
-                        tempTextView.setText(String.format("%.0f°",responseData.current.tempC))
-                        descriptionTextView.setText(String.format("%s",responseData.current.condition.text))
-                        humidityTextView.setText(String.format("%s%%",responseData.current.humidity))
-                        windTextView.setText(String.format("%s km/hr",responseData.current.windKph))
-
-                        //todo update with more accuracy regarding images, according to API details of the weather
-                        animationView.setAnimation(AppUtils.getWeatherAnimation(responseData.current.condition.code))
-                        animationView.playAnimation()
-                    }
-                } catch (e: Exception) {
-                    // handle the exception
-                    Log.e("MainFragment", "currentWeatherUpdate: responseData exception. e=${e.message}")
-                    return
-                }
-            }
-            // Error occurred retrieving data
-            result.isFailure -> {
-                Log.e("MainFragment", "currentWeatherUpdate: Error retrieving data.")
-            }
+            //todo update with more accuracy regarding images, according to API details of the weather
+            animationView.setAnimation(AppUtils.getWeatherAnimation(resultData.current.condition.code))
+            animationView.playAnimation()
         }
     }
 
-    private fun forecastWeatherUpdate(result: Result<NextDaysForecastResponse>) {
-        when {
-            result.isSuccess -> {
-                try {
-                    val responseData = result.getOrThrow()
-                    Log.i("MainFragment", "forecastWeatherUpdate: Data updated on the screen")
-                    multipleDaysRecyclerView.setData(responseData.forecast.forecastday)
-                } catch (e: Exception) {
-                    // handle the exception
-                    Log.e("MainFragment","forecastWeatherUpdate: responseData exception. e=${e.message}")
-                    return
-                }
-            }
-            result.isFailure -> {
-                Log.e("MainFragment", "forecastWeatherUpdate: Error retrieving data.")
-            }
-        }
+    /**
+     * Updates recycler forecast data
+     */
+    private fun forecastWeatherUpdate(resultData: NextDaysForecastResponse) {
+        multipleDaysRecyclerView.setData(resultData.forecast.forecastday)
     }
 }
 
