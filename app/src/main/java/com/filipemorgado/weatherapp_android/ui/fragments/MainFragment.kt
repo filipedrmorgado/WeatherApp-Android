@@ -16,9 +16,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.filipemorgado.weatherapp_android.R
+import com.filipemorgado.weatherapp_android.data.model.CurrentWeatherDetails
 import com.filipemorgado.weatherapp_android.data.model.response.ForecastDayData
 import com.filipemorgado.weatherapp_android.data.model.response.NextDaysForecastResponse
-import com.filipemorgado.weatherapp_android.data.model.response.RealtimeForecastDataResponse
 import com.filipemorgado.weatherapp_android.databinding.FragmentMainBinding
 import com.filipemorgado.weatherapp_android.ui.adapters.MultipleDaysRecyclerView
 import com.filipemorgado.weatherapp_android.ui.viewmodels.WeatherViewModel
@@ -38,8 +38,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
-
-        // Setting up the fragment
+        // Setting up the UI and Observers
         setupUI()
         setupObservers()
         return binding.root
@@ -127,7 +126,8 @@ class MainFragment : Fragment() {
     private fun setupObservers() {
         lifecycleScope.launch {
             weatherViewModel.currentWeatherFlow.collect {
-                currentWeatherUpdate(it)
+                val detailsDataClass = CurrentWeatherDetails(it.current.tempC, it.current.humidity, it.current.windKph,it.current.condition.text, it.current.condition.code)
+                currentWeatherUpdate(detailsDataClass)
                 Log.i("MainFragment", "setupObservers: Received Current Weather Data to Update.")
             }
         }
@@ -147,6 +147,48 @@ class MainFragment : Fragment() {
             }
         }
 
+        binding.contentMainLayout.currentWeatherSelector.todaySelector.setOnClickListener {
+            onTodaySelectorClick()
+        }
+        binding.contentMainLayout.currentWeatherSelector.tomorrowSelector.setOnClickListener {
+            onTomorrowSelectorClick()
+        }
+        binding.contentMainLayout.currentWeatherSelector.nextWeekSelector.setOnClickListener {
+            onNextWeekSelectorClick()
+        }
+    }
+
+    private fun onTodaySelectorClick() {
+        val currentData = weatherViewModel.currentWeather?.current ?: return
+        val detailsDataClass = CurrentWeatherDetails(currentData.tempC, currentData.humidity, currentData.windKph,currentData.condition.text, currentData.condition.code)
+        currentWeatherUpdate(detailsDataClass)
+        // Updates UI
+        with(binding.contentMainLayout.currentWeatherSelector) {
+            todaySelector.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(),R.color.button_background_grey))
+            todaySelector.setTextColor(ContextCompat.getColor(requireContext(),R.color.material_blue))
+            tomorrowSelector.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
+            tomorrowSelector.setTextColor(ContextCompat.getColor(requireContext(),R.color.colorPrimaryDarkNight))
+            nextWeekSelector.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
+        }
+    }
+
+    private fun onTomorrowSelectorClick() {
+        val tomorrowData = weatherViewModel.forecastWeather?.forecast?.forecastday?.get(1)?.day ?: return
+        val detailsDataClass = CurrentWeatherDetails(tomorrowData.avgtemp_c, tomorrowData.avghumidity.toInt(), tomorrowData.maxwind_kph,tomorrowData.condition.text, tomorrowData.condition.code)
+        currentWeatherUpdate(detailsDataClass)
+        // Updates UI
+        with(binding.contentMainLayout.currentWeatherSelector) {
+            todaySelector.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
+            todaySelector.setTextColor( ContextCompat.getColor(requireContext(),R.color.colorPrimaryDarkNight))
+            tomorrowSelector.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(),R.color.button_background_grey))
+            tomorrowSelector.setTextColor(ContextCompat.getColor(requireContext(),R.color.material_blue))
+            nextWeekSelector.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
+        }
+
+    }
+
+    private fun onNextWeekSelectorClick() {
+        //todo not possible to implement, show a message
     }
 
     /**
@@ -167,17 +209,17 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun currentWeatherUpdate(resultData: RealtimeForecastDataResponse) {
+    private fun currentWeatherUpdate(data: CurrentWeatherDetails) {
         Log.i("MainFragment", "currentWeatherUpdate: Data updated on the screen")
         // Setup data on screen
         with(binding.contentMainLayout) {
-            tempTextView.setText(String.format("%.0f°",resultData.current.tempC))
-            descriptionTextView.setText(String.format("%s",resultData.current.condition.text))
-            humidityTextView.setText(String.format("%s%%",resultData.current.humidity))
-            windTextView.setText(String.format("%s km/hr",resultData.current.windKph))
+            tempTextView.setText(String.format("%.0f°",data.temp_c))
+            descriptionTextView.setText(String.format("%s",data.conditionInfo))
+            humidityTextView.setText(String.format("%d%%",data.humidity))
+            windTextView.setText(String.format("%s km/hr",data.windKph))
 
             //todo update with more accuracy regarding images, according to API details of the weather
-            animationView.setAnimation(AppUtils.getWeatherAnimation(resultData.current.condition.code))
+            animationView.setAnimation(AppUtils.getWeatherAnimation(data.icon))
             animationView.playAnimation()
         }
     }
