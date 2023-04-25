@@ -10,4 +10,5 @@
     <string name="zero_label">0%d</string>
     <string name="custom_linechart_circle_color">#33b5e5</string>
     <string name="line_chart_description">8 hour prediction</string>
+    <string name="default_search_text">Coimbra</string>
 </resources>

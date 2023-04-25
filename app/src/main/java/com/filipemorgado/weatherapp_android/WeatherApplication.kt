@@ -1,8 +1,10 @@
 package com.filipemorgado.weatherapp_android
 
 import android.app.Application
-import com.filipemorgado.weatherapp_android.data.network.ApiInterface
+import com.filipemorgado.weatherapp_android.data.network.CitiesDataApiInterface
 import com.filipemorgado.weatherapp_android.data.network.NetworkConnectionInterceptor
+import com.filipemorgado.weatherapp_android.data.network.WeatherDataApiInterface
+import com.filipemorgado.weatherapp_android.data.repositories.CitiesDataRepository
 import com.filipemorgado.weatherapp_android.data.repositories.WeatherRepository
 import com.filipemorgado.weatherapp_android.ui.viewmodelfactory.WeatherViewModelFactory
 import org.kodein.di.Kodein
@@ -19,10 +21,13 @@ class WeatherApplication : Application(), KodeinAware {
         import(androidXModule(this@WeatherApplication))
 
         bind() from singleton { NetworkConnectionInterceptor(instance()) }
-        bind() from singleton { ApiInterface(instance()) }
+        bind() from singleton { WeatherDataApiInterface(instance()) }
+        bind() from singleton { CitiesDataApiInterface(instance()) }
+        // Repositories
         bind() from singleton { WeatherRepository(instance() /*instance()*/) }
+        bind() from singleton { CitiesDataRepository(instance() /*instance()*/) }
 
-        bind() from provider { WeatherViewModelFactory(instance()) }
+        bind() from provider { WeatherViewModelFactory(instance(), instance()) }
         //bind() from provider { WeatherDatabase(instance()) }
     }
 }

@@ -8,8 +8,11 @@ import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -50,9 +53,57 @@ class MainFragment : Fragment() {
     private fun setupUI() {
         initializeRecyclerView()
         setupTextSwitchers()
+        setupSearchQuery()
         //todo make it dynamic
-        binding.toolbarLayout.cityNameTextView.text = "Coimbra, PT"
         setupInitialButtonSelectorUI()
+    }
+
+    private fun setupSearchQuery() {
+        setQqueryFocusListener()
+
+        val cities = arrayOf("New York",
+            "Los Angeles",
+            "Chicago", "Houston",
+            "China", "Houble",
+            "Chiad", "Houston",
+            "Philadelphia", "Phoenix", "San Antonio", "San Diego", "Dallas", "San Jose")
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, cities)
+        binding.searchListView.adapter = adapter
+
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (!newText.isNullOrEmpty()) {
+                    binding.searchListView.visibility = View.VISIBLE
+                    adapter.filter.filter(newText)
+                } else {
+                    binding.searchListView.visibility = View.GONE
+                }
+                return true
+            }
+        })
+
+        binding.searchListView.setOnItemClickListener { _, _, position, _ ->
+            val selectedItem = adapter.getItem(position).toString()
+            //Toast.makeText(this, "You selected $selectedItem", Toast.LENGTH_SHORT).show()
+            binding.searchView.setQuery(selectedItem, true)
+            binding.searchListView.visibility = View.GONE
+        }
+
+
+
+    }
+
+    /**
+     * Setup text Switchers
+     */
+    private fun setQqueryFocusListener() {
+        binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            binding.tvSearchedCity.isVisible = !hasFocus
+        }
     }
 
     private fun setupInitialButtonSelectorUI() {
@@ -68,21 +119,24 @@ class MainFragment : Fragment() {
      * Setup text Switchers
      */
     private fun setupTextSwitchers() {
-        binding.contentMainLayout.tempTextView.setFactory { TextView(ContextThemeWrapper(context,R.style.TempTextView), null, 0) }
-        binding.contentMainLayout.tempTextView.setInAnimation(context,R.anim.slide_in_right)
-        binding.contentMainLayout.tempTextView.setOutAnimation(context,R.anim.slide_out_left)
 
-        binding.contentMainLayout.descriptionTextView.setFactory { TextView(ContextThemeWrapper(context, R.style.DescriptionTextView), null, 0) }
-        binding.contentMainLayout.descriptionTextView.setInAnimation(context, R.anim.slide_in_right)
-        binding.contentMainLayout.descriptionTextView.setOutAnimation(context, R.anim.slide_out_left)
+        with(binding.contentMainLayout) {
+            tempTextView.setFactory { TextView(ContextThemeWrapper(context,R.style.TempTextView), null, 0) }
+            tempTextView.setInAnimation(context,R.anim.slide_in_right)
+            tempTextView.setOutAnimation(context,R.anim.slide_out_left)
 
-        binding.contentMainLayout.humidityTextView.setFactory { TextView(ContextThemeWrapper(context, R.style.HumidityTextView), null, 0) }
-        binding.contentMainLayout.humidityTextView.setInAnimation(context, R.anim.slide_in_bottom)
-        binding.contentMainLayout.humidityTextView.setOutAnimation(context, R.anim.slide_out_top)
+            descriptionTextView.setFactory { TextView(ContextThemeWrapper(context, R.style.DescriptionTextView), null, 0) }
+            descriptionTextView.setInAnimation(context, R.anim.slide_in_right)
+            descriptionTextView.setOutAnimation(context, R.anim.slide_out_left)
 
-        binding.contentMainLayout.windTextView.setFactory { TextView(ContextThemeWrapper(context, R.style.WindSpeedTextView), null, 0) }
-        binding.contentMainLayout.windTextView.setInAnimation(context, R.anim.slide_in_bottom)
-        binding.contentMainLayout.windTextView.setOutAnimation(context, R.anim.slide_out_top)
+            humidityTextView.setFactory { TextView(ContextThemeWrapper(context, R.style.HumidityTextView), null, 0) }
+            humidityTextView.setInAnimation(context, R.anim.slide_in_bottom)
+            humidityTextView.setOutAnimation(context, R.anim.slide_out_top)
+
+            windTextView.setFactory { TextView(ContextThemeWrapper(context, R.style.WindSpeedTextView), null, 0) }
+            windTextView.setInAnimation(context, R.anim.slide_in_bottom)
+            windTextView.setOutAnimation(context, R.anim.slide_out_top)
+        }
     }
 
     /**
@@ -160,7 +214,7 @@ class MainFragment : Fragment() {
 
     private fun onTodaySelectorClick() {
         val currentData = weatherViewModel.currentWeather?.current ?: return
-        val detailsDataClass = CurrentWeatherDetails(currentData.tempC, currentData.humidity, currentData.windKph,currentData.condition.text, currentData.condition.code)
+        val detailsDataClass = CurrentWeatherDetails(currentData.tempC, currentData.humidity, currentData.windKph, currentData.condition.text, currentData.condition.code)
         currentWeatherUpdate(detailsDataClass)
         // Updates UI
         with(binding.contentMainLayout.currentWeatherSelector) {
@@ -216,7 +270,7 @@ class MainFragment : Fragment() {
             tempTextView.setText(String.format("%.0f°",data.temp_c))
             descriptionTextView.setText(String.format("%s",data.conditionInfo))
             humidityTextView.setText(String.format("%d%%",data.humidity))
-            windTextView.setText(String.format("%s km/hr",data.windKph))
+            windTextView.setText(String.format("%s km/h",data.windKph))
 
             //todo update with more accuracy regarding images, according to API details of the weather
             animationView.setAnimation(AppUtils.getWeatherAnimation(data.icon))

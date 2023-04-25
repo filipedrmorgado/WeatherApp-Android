@@ -45,7 +45,7 @@ class HourlyWeatherRecyclerView : RecyclerView.Adapter<HourlyWeatherRecyclerView
         fun bindItems(forecastDayDataDetails: HourData) {
             binding.apply {
                 this.hourlyTempTextView.text = String.format("%.0f°",forecastDayDataDetails.temp_c)
-                this.hourlyTimeTextView.text = String.format("%s:30",getHourFromTheDay(forecastDayDataDetails.time_epoch))
+                this.hourlyTimeTextView.text = String.format("%s:00",getHourFromTheDay(forecastDayDataDetails.time_epoch))
                 // Sets card colors
                 binding.hourlyCardView.setCardBackgroundColor(Color.WHITE)
                 AppUtils.setWeatherIcon(binding.root.context, binding.hourlyWeatherImageView,forecastDayDataDetails.condition.code)

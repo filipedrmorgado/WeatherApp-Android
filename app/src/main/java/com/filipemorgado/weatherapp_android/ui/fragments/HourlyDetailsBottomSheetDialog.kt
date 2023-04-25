@@ -68,8 +68,8 @@ class HourlyDetailsBottomSheetDialog : BottomSheetDialogFragment() {
         val backgroundColor = arguments?.getInt("color") ?: ContextCompat.getColor(requireContext(), R.color.material_blue)
 
         setupDayText()
-        binding.maxTempTextView.text = forecastDayData.day.mintemp_c.toString()
-        binding.minTempTextView.text = forecastDayData.day.maxtemp_c.toString()
+        binding.maxTempTextView.text = forecastDayData.day.maxtemp_c.toString()
+        binding.minTempTextView.text = forecastDayData.day.mintemp_c.toString()
         binding.tempTextView.text = forecastDayData.day.avgtemp_c.toString()
         binding.bottomSheetAnimationView.setAnimation(AppUtils.getWeatherAnimation(forecastDayData.day.condition.code))
         binding.bottomSheetAnimationView.playAnimation()

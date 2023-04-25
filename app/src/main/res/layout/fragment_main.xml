@@ -1,46 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".ui.fragments.MainFragment">
 
-        <include
-            android:id="@+id/toolbarLayout"
-            layout="@layout/toolbar" />
+    <!--<include
+        android:id="@+id/toolbarLayout"
+        layout="@layout/toolbar" />-->
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:id="@+id/bootomBarCoordinatorLayout"
+    <RelativeLayout
+        android:id="@+id/rlSearchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bootomBarCoordinatorLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-                <include
-                    android:id="@+id/contentMainLayout"
-                    layout="@layout/main_content" />
-
-                <com.google.android.material.bottomappbar.BottomAppBar
-                    android:id="@+id/bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_gravity="bottom"
-                    app:backgroundTint="@color/colorPrimary"
-                    app:navigationIcon="@drawable/ic_menu_black_24dp" />
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-        <!--<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/next_days_button"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/next_15_days_label"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            app:backgroundTint="@color/material_blue"
-            app:layout_anchor="@id/bar"
-            app:strokeColor="@android:color/white" />-->
+            android:iconifiedByDefault="false"
+            android:layoutDirection="rtl"
+            android:textAppearance="@style/SearchStyle"
+            app:queryHint="@string/default_search_text" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/tvSearchedCity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/searchView"
+            android:layout_alignTop="@id/searchView"
+            android:layout_alignEnd="@id/searchView"
+            android:layout_alignBottom="@id/searchView"
+            android:gravity="center"
+            android:text="@string/default_search_text"
+            android:textAlignment="center"
+            android:textAppearance="@style/SearchStyle" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/searchListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@id/bootomBarCoordinatorLayout"
+        android:background="@color/colorPrimary"
+        android:elevation="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rlSearchView"
+        android:visibility="gone"/>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bootomBarCoordinatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/rlSearchView">
+
+        <include
+            android:id="@+id/contentMainLayout"
+            layout="@layout/main_content" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--<com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="bottom"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bootomBarCoordinatorLayout"
+        app:navigationIcon="@drawable/ic_menu_black_24dp"
+        tools:ignore="BottomAppBar" />
+-->
+</androidx.constraintlayout.widget.ConstraintLayout>

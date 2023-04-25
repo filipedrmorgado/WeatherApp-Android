@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.filipemorgado.weatherapp_android.data.model.response.NextDaysForecastResponse
 import com.filipemorgado.weatherapp_android.data.model.response.RealtimeForecastDataResponse
+import com.filipemorgado.weatherapp_android.data.repositories.CitiesDataRepository
 import com.filipemorgado.weatherapp_android.data.repositories.WeatherRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -13,7 +14,10 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewModel() {
+class WeatherViewModel(
+    private val weatherRepository: WeatherRepository,
+    private val citiesDataRepository: CitiesDataRepository,
+    ) : ViewModel() {
 
     // Flow that keeps up to date the state of the current weather request and its result, success or error.
     private val _currentWeatherFlow = MutableSharedFlow<RealtimeForecastDataResponse>()

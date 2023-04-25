@@ -12,7 +12,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
-interface ApiInterface {
+interface WeatherDataApiInterface {
 
     @GET("current.json?")
     suspend fun findCityWeatherData(
@@ -30,7 +30,7 @@ interface ApiInterface {
     companion object {
         operator fun invoke(
             networkConnectionInterceptor: NetworkConnectionInterceptor
-        ): ApiInterface {
+        ): WeatherDataApiInterface {
 
             val okkHttpclient = OkHttpClient.Builder()
                 .addInterceptor(networkConnectionInterceptor)
@@ -45,7 +45,7 @@ interface ApiInterface {
                 .baseUrl(WEATHER_API_SERVER_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-                .create(ApiInterface::class.java)
+                .create(WeatherDataApiInterface::class.java)
         }
     }
 }

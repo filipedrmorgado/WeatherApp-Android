@@ -58,6 +58,15 @@
         <item name="android:fontFamily">@font/vazir</item>
     </style>
 
+    <!-- Search Style -->
+
+    <style name="SearchStyle">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/headers_dark_blue</item>
+        <item name="android:fontFamily">@font/vazir</item>
+    </style>
+
     <!--Selector Button Option Style-->
     <style name="ButtonSelectionStyle">
         <item name="android:textSize">14sp</item>
