@@ -3,6 +3,7 @@ package com.filipemorgado.weatherapp_android.ui.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.filipemorgado.weatherapp_android.data.model.response.GeoDBCitiesResponse
 import com.filipemorgado.weatherapp_android.data.model.response.NextDaysForecastResponse
 import com.filipemorgado.weatherapp_android.data.model.response.RealtimeForecastDataResponse
 import com.filipemorgado.weatherapp_android.data.repositories.CitiesDataRepository
@@ -34,6 +35,18 @@ class WeatherViewModel(
     val forecastWeather: NextDaysForecastResponse?
         get() = _forecastWeather
 
+    // Cities related data
+    private val _cityList = MutableSharedFlow<GeoDBCitiesResponse>()
+    val cityList = _cityList.asSharedFlow()
+
+    private var _requestedList: MutableList<String> = mutableListOf("New York",
+        "Los Angeles",
+        "Chicago", "Houston")
+    val requestedList: MutableList<String>
+        get() = _requestedList
+
+    var searchedCityText: String? = ""
+
     init {
         // Request data from OpenWeather API
         //todo make it the saved city data to be requested
@@ -55,12 +68,12 @@ class WeatherViewModel(
         //todo demonstrate a loading while requesting
         val result = weatherRepository.findCityWeatherByName(cityName)
         if(result.isFailure) {
-            Log.e("MainFragment", "currentWeatherUpdate: Error retrieving data.")
+            Log.e("WeatherViewModel", "currentWeatherUpdate: Error retrieving data.")
             return@withContext
         }
         val responseData = result.getOrNull()
         if(responseData == null) {
-            Log.e("MainFragment", "currentWeatherUpdate: responseData is null.")
+            Log.e("WeatherViewModel", "currentWeatherUpdate: responseData is null.")
             return@withContext
         }
         // Trigger observers
@@ -76,12 +89,12 @@ class WeatherViewModel(
         val result = weatherRepository.getCityNextDaysForecast(cityName)
 
         if(result.isFailure) {
-            Log.e("MainFragment", "currentWeatherUpdate: Error retrieving data.")
+            Log.e("WeatherViewModel", "currentWeatherUpdate: Error retrieving data.")
             return@withContext
         }
         val responseData = result.getOrNull()
         if(responseData == null) {
-            Log.e("MainFragment", "currentWeatherUpdate: responseData is null.")
+            Log.e("WeatherViewModel", "currentWeatherUpdate: responseData is null.")
             return@withContext
         }
         // Trigger observers
@@ -89,5 +102,27 @@ class WeatherViewModel(
         _forecastWeather = result.getOrNull()
     }
 
+
+    suspend fun findCitiesStartingWith(cityPrefix: String) = withContext(Dispatchers.IO) {
+        searchedCityText = cityPrefix
+        //todo demonstrate a loading while requesting
+        val result = citiesDataRepository.findCitiesStartingWith(cityPrefix)
+        Log.e("WeatherViewModel", "ZZZZ result=$result")
+
+        if(result.isFailure) {
+            Log.e("WeatherViewModel", "getCityName: Error retrieving data.")
+            return@withContext
+        }
+        val responseData = result.getOrNull()
+        if(responseData == null) {
+            Log.e("WeatherViewModel", "getCityName: responseData is null.")
+            return@withContext
+        }
+        // Forms a list of the first 5 unique cities obtained by the request to the API.
+        _requestedList = responseData.data.map { it.city }.distinct().take(5).toMutableList()
+
+        // Trigger observers
+        _cityList.emit(responseData)
+    }
 
 }

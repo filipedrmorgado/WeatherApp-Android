@@ -1,7 +1,7 @@
 package com.filipemorgado.weatherapp_android.data.repositories
 
 import android.util.Log
-import com.filipemorgado.weatherapp_android.data.model.response.GeoNamesResponse
+import com.filipemorgado.weatherapp_android.data.model.response.GeoDBCitiesResponse
 import com.filipemorgado.weatherapp_android.data.network.CitiesDataApiInterface
 import com.filipemorgado.weatherapp_android.data.network.SafeApiRequest
 import com.filipemorgado.weatherapp_android.utils.ApiException
@@ -11,9 +11,9 @@ class CitiesDataRepository(
     private val api: CitiesDataApiInterface,
 ) : SafeApiRequest() {
 
-    suspend fun findCityWeatherByName(cityName: String): Result<GeoNamesResponse> {
+    suspend fun findCitiesStartingWith(cityPrefix: String): Result<GeoDBCitiesResponse> {
         return try {
-            val result = apiRequest { api.searchCities(name = cityName) }
+            val result = apiRequest { api.getCities(namePrefix = cityPrefix) }
             Log.d("WeatherRepository", "findCityWeatherByName: result=$result")
 
             // Request was successful

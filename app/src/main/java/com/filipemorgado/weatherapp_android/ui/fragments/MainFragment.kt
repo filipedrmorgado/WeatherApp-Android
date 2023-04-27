@@ -27,7 +27,9 @@ import com.filipemorgado.weatherapp_android.ui.adapters.MultipleDaysRecyclerView
 import com.filipemorgado.weatherapp_android.ui.viewmodels.WeatherViewModel
 import com.filipemorgado.weatherapp_android.utils.AppUtils
 import com.filipemorgado.weatherapp_android.utils.RECYCLER_SIZE
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainFragment : Fragment() {
 
@@ -35,6 +37,7 @@ class MainFragment : Fragment() {
     private val weatherViewModel: WeatherViewModel by activityViewModels()
 
     private lateinit var multipleDaysRecyclerView: MultipleDaysRecyclerView
+    private lateinit var searchListAdapter: ArrayAdapter<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,14 +64,9 @@ class MainFragment : Fragment() {
     private fun setupSearchQuery() {
         setQqueryFocusListener()
 
-        val cities = arrayOf("New York",
-            "Los Angeles",
-            "Chicago", "Houston",
-            "China", "Houble",
-            "Chiad", "Houston",
-            "Philadelphia", "Phoenix", "San Antonio", "San Diego", "Dallas", "San Jose")
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, cities)
-        binding.searchListView.adapter = adapter
+        //todo make it modular. Set initial array empty
+        searchListAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, mutableListOf())
+        binding.searchListView.adapter = searchListAdapter
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -77,8 +75,10 @@ class MainFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (!newText.isNullOrEmpty()) {
+                    lifecycleScope.launch {
+                        weatherViewModel.findCitiesStartingWith(newText)
+                    }
                     binding.searchListView.visibility = View.VISIBLE
-                    adapter.filter.filter(newText)
                 } else {
                     binding.searchListView.visibility = View.GONE
                 }
@@ -87,13 +87,10 @@ class MainFragment : Fragment() {
         })
 
         binding.searchListView.setOnItemClickListener { _, _, position, _ ->
-            val selectedItem = adapter.getItem(position).toString()
-            //Toast.makeText(this, "You selected $selectedItem", Toast.LENGTH_SHORT).show()
+            val selectedItem = searchListAdapter.getItem(position).toString()
             binding.searchView.setQuery(selectedItem, true)
             binding.searchListView.visibility = View.GONE
         }
-
-
 
     }
 
@@ -109,17 +106,18 @@ class MainFragment : Fragment() {
     private fun setupInitialButtonSelectorUI() {
         val color = ContextCompat.getColor(requireContext(),R.color.button_background_grey)
         val btnTextColor = ContextCompat.getColor(requireContext(),R.color.material_blue)
-        binding.contentMainLayout.currentWeatherSelector.todaySelector.backgroundTintList = ColorStateList.valueOf(color)
-        binding.contentMainLayout.currentWeatherSelector.todaySelector.setTextColor(btnTextColor)
-        binding.contentMainLayout.currentWeatherSelector.tomorrowSelector.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
-        binding.contentMainLayout.currentWeatherSelector.nextWeekSelector.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
+        with(binding.contentMainLayout.currentWeatherSelector) {
+           todaySelector.backgroundTintList = ColorStateList.valueOf(color)
+           todaySelector.setTextColor(btnTextColor)
+           tomorrowSelector.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
+           nextWeekSelector.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
+        }
     }
 
     /**
      * Setup text Switchers
      */
     private fun setupTextSwitchers() {
-
         with(binding.contentMainLayout) {
             tempTextView.setFactory { TextView(ContextThemeWrapper(context,R.style.TempTextView), null, 0) }
             tempTextView.setInAnimation(context,R.anim.slide_in_right)
@@ -190,6 +188,20 @@ class MainFragment : Fragment() {
             weatherViewModel.forecastWeatherFlow.collect {
                 forecastWeatherUpdate(it)
                 Log.i("MainFragment", "setupObservers: Received Forecast Weather Data to Update.")
+            }
+        }
+
+        lifecycleScope.launch {
+            weatherViewModel.cityList.collect {
+                Log.i("MainFragment", "ZZZZ weatherViewModel.searchedCityText=${weatherViewModel.searchedCityText}, " +
+                        "t1=${it.data},}")
+                Log.i("MainFragment", "text=${weatherViewModel.searchedCityText}")
+                Log.i("MainFragment", "t2=${weatherViewModel.requestedList.toList()}")
+                withContext(Dispatchers.Main) {
+                    searchListAdapter.clear()
+                    weatherViewModel.requestedList.toList().let { data -> searchListAdapter.addAll(data) }
+                    searchListAdapter.notifyDataSetChanged()
+                }
             }
         }
 
