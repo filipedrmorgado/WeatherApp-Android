@@ -42,7 +42,7 @@ class HourlyDetailsBottomSheetDialog : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHourlyDetailsBottomDialogBinding.inflate(inflater)
-        //todo prevent force checks maybe "as". Also, set the state to expanded maybe?
+        //todo prevent force checks maybe "as".
         setBottomSheetData()
         setLineChartData()
         initializeRecyclerView()
@@ -60,8 +60,8 @@ class HourlyDetailsBottomSheetDialog : BottomSheetDialogFragment() {
     }
 
     private fun setRecyclerViewData() {
-        // Sorts next day hour list to start at 00h
-        val sortedHourList = forecastDayData.hour.sortedByDescending { it.time_epoch }
+        //todo Sort next day hour list to start at 00h
+        val sortedHourList = forecastDayData.hour.sortedBy { it.time }
         hourlyWeatherRecyclerView.setData(sortedHourList)
     }
 

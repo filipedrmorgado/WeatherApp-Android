@@ -58,7 +58,6 @@ class MainFragment : Fragment() {
         initializeRecyclerView()
         setupTextSwitchers()
         setupSearchQuery()
-        //todo make it dynamic
         setupInitialButtonSelectorUI()
     }
 
@@ -117,13 +116,12 @@ class MainFragment : Fragment() {
         val selectedItem = searchListAdapter.getItem(position).toString()
         binding.searchView.setQuery(selectedItem, true)
         binding.searchListView.visibility = View.GONE
-        //todo make the call to update the data
+        // Item selected, request data for that city
         weatherViewModel.findCityWeatherByName(selectedItem)
         weatherViewModel.getCityNextDaysForecast(selectedItem)
     }
 
     private fun initializeSearchAdapter() {
-        //todo make it modular. Set initial array empty
         searchListAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, mutableListOf())
         binding.searchListView.adapter = searchListAdapter
     }
@@ -190,6 +188,12 @@ class MainFragment : Fragment() {
         // Setup on click observers to launch details
         multipleDaysRecyclerView.setOnItemClickListener(object : MultipleDaysRecyclerView.OnDayDetailsClickListener {
             override fun onDayClick(position: Int) {
+                //todo due to the fact that we can only get the list for the current day and further 2.
+                // Any clicks on any item further than 2 days will have no results
+                if(position > 2){
+                    showToastToUser(getString(R.string.no_data_for_day_cards))
+                    return
+                }
                 val dataToBeSent = weatherViewModel.forecastWeather?.forecast?.forecastday?.get(position)
                 val colorToBeSet = getColorBasedOnIndex(position)
                 launchBottomSheetDialog(dataToBeSent, colorToBeSet)
@@ -257,6 +261,10 @@ class MainFragment : Fragment() {
         binding.contentMainLayout.currentWeatherSelector.nextWeekSelector.setOnClickListener {
             onNextWeekSelectorClick()
         }
+
+        weatherViewModel.errorOccurredEvent.observe(viewLifecycleOwner) {
+            showToastToUser(it)
+        }
     }
 
     private fun onTodaySelectorClick() {
@@ -289,7 +297,8 @@ class MainFragment : Fragment() {
     }
 
     private fun onNextWeekSelectorClick() {
-        //todo not possible to implement, show a message
+        //todo not possible to implement due to free api keys restrictions
+        showToastToUser(getString(R.string.not_implemented_yet))
     }
 
     /**
@@ -306,7 +315,7 @@ class MainFragment : Fragment() {
             bottomSheetFragment.show(parentFragmentManager,"CustomBottomSheet")
 
         }else{
-            //todo see what to do
+            showToastToUser(getString(R.string.no_details_available))
         }
     }
 
@@ -336,7 +345,10 @@ class MainFragment : Fragment() {
      * Updates recycler forecast data
      */
     private fun forecastWeatherUpdate(resultData: NextDaysForecastResponse) {
-        multipleDaysRecyclerView.setData(resultData.forecast.forecastday)
+        //todo This is duplicated for the sake of displaying what it would like with a 6 day forecast.
+        // Currently, we can only have the current day and next 2 days data correctly.
+        val duplicatedList = resultData.forecast.forecastday + resultData.forecast.forecastday
+        multipleDaysRecyclerView.setData(duplicatedList)
     }
 }
 

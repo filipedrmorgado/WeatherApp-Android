@@ -35,7 +35,7 @@ interface WeatherDataApiInterface {
             val okkHttpclient = OkHttpClient.Builder()
                 .addInterceptor(networkConnectionInterceptor)
                 .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                .connectTimeout(CONNECT_TIMEOUT, TimeUnit.MINUTES) //todo add constants for timeouts.
+                .connectTimeout(CONNECT_TIMEOUT, TimeUnit.MINUTES)
                 .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
                 .build()

@@ -50,14 +50,16 @@ class WeatherViewModel(
     private var _currentCityToBeDisplayed = MutableLiveData<String>()
     val currentCityToBeDisplayed: LiveData<String> = _currentCityToBeDisplayed
 
+    // Used to display errors to be displayed to the user
+    private var _errorOccurredEvent = MutableLiveData<String>()
+    val errorOccurredEvent: LiveData<String> = _errorOccurredEvent
+
     init {
-        // Request data from OpenWeather API
         //todo make it the saved city data to be requested
         viewModelScope.launch(Dispatchers.IO) {
             //todo remove later
             val currentWeatherDeferred = async { findCityWeatherByName(DEFAULT_CITY) }
             val forecastDeferred = async { getCityNextDaysForecast(DEFAULT_CITY) }
-
             //  Ensures that the shared flows _currentWeatherFlow and _forecastWeatherFlow are both updated
             //  with the latest data before the UI can start observing them.
             currentWeatherDeferred.await()
@@ -72,16 +74,13 @@ class WeatherViewModel(
         // Updates the city
         //todo demonstrate a loading while requesting
         val result = weatherRepository.findCityWeatherByName(cityName)
-        if(result.isFailure) {
+        val responseData = result.getOrNull()
+        if(result.isFailure || responseData == null) {
+            _errorOccurredEvent.postValue("Error occurred while retrieving $cityName weather.")
+            fallBackRequest()
             Log.e("WeatherViewModel", "findCityWeatherByName: Error retrieving data.")
             return@withContext
         }
-        val responseData = result.getOrNull()
-        if(responseData == null) {
-            Log.e("WeatherViewModel", "findCityWeatherByName: responseData is null.")
-            return@withContext
-        }
-        Log.e("WeatherViewModel", "ZZZZ findCityWeatherByName: responseData=$responseData")
         // Trigger observers
         withContext(Dispatchers.Main) {
             _currentCityToBeDisplayed.value = cityName
@@ -96,17 +95,12 @@ class WeatherViewModel(
     suspend fun getCityNextDaysForecast(cityName: String) = withContext(Dispatchers.IO) {
         //todo demonstrate a loading while requesting
         val result = weatherRepository.getCityNextDaysForecast(cityName)
-
-        if(result.isFailure) {
-            Log.e("WeatherViewModel", "currentWeatherUpdate: Error retrieving data.")
-            return@withContext
-        }
         val responseData = result.getOrNull()
-        if(responseData == null) {
-            Log.e("WeatherViewModel", "currentWeatherUpdate: responseData is null.")
+        if(result.isFailure || responseData == null) {
+            Log.e("WeatherViewModel", "currentWeatherUpdate: Error retrieving data.")
+            fallBackRequest()
             return@withContext
         }
-
         // Trigger observers
         _forecastWeatherFlow.emit(responseData)
         _forecastWeather = result.getOrNull()
@@ -116,20 +110,30 @@ class WeatherViewModel(
     suspend fun findCitiesStartingWith(cityPrefix: String) = withContext(Dispatchers.IO) {
         //todo demonstrate a loading while requesting
         val result = citiesDataRepository.findCitiesStartingWith(cityPrefix)
-        if(result.isFailure) {
-            Log.e("WeatherViewModel", "getCityName: Error retrieving data.")
-            return@withContext
-        }
         val responseData = result.getOrNull()
-        if(responseData == null) {
-            Log.e("WeatherViewModel", "getCityName: responseData is null.")
+        if(result.isFailure || responseData == null) {
+            Log.e("WeatherViewModel", "findCitiesStartingWith: Error retrieving data.")
             return@withContext
         }
         // Forms a list of the first 5 unique cities obtained by the request to the API.
         _requestedList = responseData.data.map { it.city }.distinct().take(5).toMutableList()
-
         // Trigger observers
         _cityList.emit(responseData)
     }
 
+    /**
+     * Fallback request to a city that exists, in order to have fallback data
+     */
+    private suspend fun fallBackRequest() {
+        viewModelScope.launch(Dispatchers.IO) {
+            //todo remove later
+            val currentWeatherDeferred = async { findCityWeatherByName(DEFAULT_CITY) }
+            val forecastDeferred = async { getCityNextDaysForecast(DEFAULT_CITY) }
+
+            //  Ensures that the shared flows _currentWeatherFlow and _forecastWeatherFlow are both updated
+            //  with the latest data before the UI can start observing them.
+            currentWeatherDeferred.await()
+            forecastDeferred.await()
+        }
+    }
 }

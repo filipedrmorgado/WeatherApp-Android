@@ -18,4 +18,7 @@
     <string name="default_search_text">Coimbra</string>
     <string name="toast_view_text_example">Toast view text</string>
     <string name="weather_updated_with_city_name">Weather updated from city %s</string>
+    <string name="not_implemented_yet">Currently not implemented.</string>
+    <string name="no_data_for_day_cards">This card is only for visuals. No further data available.</string>
+    <string name="no_details_available">No details are available for this day.</string>
 </resources>
