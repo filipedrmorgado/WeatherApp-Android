@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -213,6 +214,7 @@ class MainFragment : Fragment() {
             weatherViewModel.currentWeatherFlow.collect {
                 val detailsDataClass = CurrentWeatherDetails(it.current.tempC, it.current.humidity, it.current.windKph,it.current.condition.text, it.current.condition.code)
                 currentWeatherUpdate(detailsDataClass)
+                showToastToUser(getString(R.string.weather_updated_with_city_name, weatherViewModel.currentCityToBeDisplayed.value))
                 Log.i("MainFragment", "setupObservers: Received Current Weather Data to Update.")
             }
         }
@@ -321,6 +323,13 @@ class MainFragment : Fragment() {
             animationView.setAnimation(AppUtils.getWeatherAnimation(data.icon))
             animationView.playAnimation()
         }
+    }
+
+    /**
+     * Displays a notification to the user
+     */
+    private fun showToastToUser(textToDisplay: String) {
+        Toast.makeText(context, textToDisplay, Toast.LENGTH_LONG).show()
     }
 
     /**

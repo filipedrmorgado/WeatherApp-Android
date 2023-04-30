@@ -6,7 +6,6 @@ const val CONNECT_TIMEOUT = 1L
 const val READ_TIMEOUT = 60L
 const val WRITE_TIMEOUT = 60L
 
-const val SEARCH_VIEW_DELAY = 1000L
 
 // Default Values
 const val DEFAULT_CITY = "Coimbra"
