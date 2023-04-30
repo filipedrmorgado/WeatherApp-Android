@@ -60,7 +60,9 @@ class HourlyDetailsBottomSheetDialog : BottomSheetDialogFragment() {
     }
 
     private fun setRecyclerViewData() {
-        hourlyWeatherRecyclerView.setData(forecastDayData.hour)
+        // Sorts next day hour list to start at 00h
+        val sortedHourList = forecastDayData.hour.sortedByDescending { it.time_epoch }
+        hourlyWeatherRecyclerView.setData(sortedHourList)
     }
 
     private fun setBottomSheetData() {

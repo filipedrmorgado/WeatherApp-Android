@@ -1,6 +1,8 @@
 package com.filipemorgado.weatherapp_android.ui.viewmodels
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.filipemorgado.weatherapp_android.data.model.response.GeoDBCitiesResponse
@@ -8,6 +10,7 @@ import com.filipemorgado.weatherapp_android.data.model.response.NextDaysForecast
 import com.filipemorgado.weatherapp_android.data.model.response.RealtimeForecastDataResponse
 import com.filipemorgado.weatherapp_android.data.repositories.CitiesDataRepository
 import com.filipemorgado.weatherapp_android.data.repositories.WeatherRepository
+import com.filipemorgado.weatherapp_android.utils.DEFAULT_CITY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -39,21 +42,21 @@ class WeatherViewModel(
     private val _cityList = MutableSharedFlow<GeoDBCitiesResponse>()
     val cityList = _cityList.asSharedFlow()
 
-    private var _requestedList: MutableList<String> = mutableListOf("New York",
-        "Los Angeles",
-        "Chicago", "Houston")
+    private lateinit var _requestedList: MutableList<String>
     val requestedList: MutableList<String>
         get() = _requestedList
 
-    var searchedCityText: String? = ""
+    // Requested city data
+    private var _currentCityToBeDisplayed = MutableLiveData<String>()
+    val currentCityToBeDisplayed: LiveData<String> = _currentCityToBeDisplayed
 
     init {
         // Request data from OpenWeather API
         //todo make it the saved city data to be requested
         viewModelScope.launch(Dispatchers.IO) {
             //todo remove later
-            val currentWeatherDeferred = async { findCityWeatherByName("Paris") }
-            val forecastDeferred = async { getCityNextDaysForecast("Paris") }
+            val currentWeatherDeferred = async { findCityWeatherByName(DEFAULT_CITY) }
+            val forecastDeferred = async { getCityNextDaysForecast(DEFAULT_CITY) }
 
             //  Ensures that the shared flows _currentWeatherFlow and _forecastWeatherFlow are both updated
             //  with the latest data before the UI can start observing them.
@@ -66,18 +69,23 @@ class WeatherViewModel(
      * Gets the current weather by city name
      */
     suspend fun findCityWeatherByName(cityName: String) = withContext(Dispatchers.IO) {
+        // Updates the city
         //todo demonstrate a loading while requesting
         val result = weatherRepository.findCityWeatherByName(cityName)
         if(result.isFailure) {
-            Log.e("WeatherViewModel", "currentWeatherUpdate: Error retrieving data.")
+            Log.e("WeatherViewModel", "findCityWeatherByName: Error retrieving data.")
             return@withContext
         }
         val responseData = result.getOrNull()
         if(responseData == null) {
-            Log.e("WeatherViewModel", "currentWeatherUpdate: responseData is null.")
+            Log.e("WeatherViewModel", "findCityWeatherByName: responseData is null.")
             return@withContext
         }
+        Log.e("WeatherViewModel", "ZZZZ findCityWeatherByName: responseData=$responseData")
         // Trigger observers
+        withContext(Dispatchers.Main) {
+            _currentCityToBeDisplayed.value = cityName
+        }
         _currentWeatherFlow.emit(responseData)
         _currentWeather = result.getOrNull()
     }
@@ -85,7 +93,7 @@ class WeatherViewModel(
     /**
      * Gets the forecast for the next 4 days
      */
-    private suspend fun getCityNextDaysForecast(cityName: String) = withContext(Dispatchers.IO) {
+    suspend fun getCityNextDaysForecast(cityName: String) = withContext(Dispatchers.IO) {
         //todo demonstrate a loading while requesting
         val result = weatherRepository.getCityNextDaysForecast(cityName)
 
@@ -98,6 +106,7 @@ class WeatherViewModel(
             Log.e("WeatherViewModel", "currentWeatherUpdate: responseData is null.")
             return@withContext
         }
+
         // Trigger observers
         _forecastWeatherFlow.emit(responseData)
         _forecastWeather = result.getOrNull()
@@ -105,11 +114,8 @@ class WeatherViewModel(
 
 
     suspend fun findCitiesStartingWith(cityPrefix: String) = withContext(Dispatchers.IO) {
-        searchedCityText = cityPrefix
         //todo demonstrate a loading while requesting
         val result = citiesDataRepository.findCitiesStartingWith(cityPrefix)
-        Log.e("WeatherViewModel", "ZZZZ result=$result")
-
         if(result.isFailure) {
             Log.e("WeatherViewModel", "getCityName: Error retrieving data.")
             return@withContext

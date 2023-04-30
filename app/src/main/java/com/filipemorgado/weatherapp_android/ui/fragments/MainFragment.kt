@@ -118,6 +118,7 @@ class MainFragment : Fragment() {
         binding.searchListView.visibility = View.GONE
         //todo make the call to update the data
         weatherViewModel.findCityWeatherByName(selectedItem)
+        weatherViewModel.getCityNextDaysForecast(selectedItem)
     }
 
     private fun initializeSearchAdapter() {
@@ -231,6 +232,10 @@ class MainFragment : Fragment() {
                     searchListAdapter.notifyDataSetChanged()
                 }
             }
+        }
+
+        weatherViewModel.currentCityToBeDisplayed.observe(viewLifecycleOwner) {
+            binding.tvSearchedCity.text = it
         }
 
         binding.contentMainLayout.todayMaterialCard.setOnClickListener {

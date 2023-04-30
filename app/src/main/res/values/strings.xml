@@ -16,4 +16,5 @@
     <string name="custom_linechart_circle_color">#33b5e5</string>
     <string name="line_chart_description">8 hour prediction</string>
     <string name="default_search_text">Coimbra</string>
+    <string name="toast_view_text_example">Toast view text</string>
 </resources>

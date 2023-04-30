@@ -59,8 +59,15 @@
     </style>
 
     <!-- Search Style -->
-
     <style name="SearchStyle">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/headers_dark_blue</item>
+        <item name="android:fontFamily">@font/vazir</item>
+    </style>
+
+    <!-- Toast Style -->
+    <style name="toastStyle">
         <item name="android:textSize">20sp</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">@color/headers_dark_blue</item>

@@ -8,6 +8,9 @@ const val WRITE_TIMEOUT = 60L
 
 const val SEARCH_VIEW_DELAY = 1000L
 
+// Default Values
+const val DEFAULT_CITY = "Coimbra"
+
 // LineChart constants
 const val LINE_CHART_LINE_WIDTH = 4F
 const val LINE_CHART_CIRCLE_RADIUS = 7F
