@@ -62,21 +62,27 @@ class MainFragment : Fragment() {
     }
 
     private fun setupSearchQuery() {
-        setQqueryFocusListener()
+        setQueryFocusListener()
+        initializeSearchAdapter()
+        setupSearchListeners()
+    }
 
-        //todo make it modular. Set initial array empty
-        searchListAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, mutableListOf())
-        binding.searchListView.adapter = searchListAdapter
-
+    /**
+     * Listeners related to search query.
+     * 1 -> Listener to trigger an API call to obtain the cities beginning with said input text.
+     * 2 -> Action to be done when listView item is selected
+     */
+    private fun setupSearchListeners() {
+        // Action to be done when entering new text on the search bar.
+        // This will trigger an API call to obtain the cities beginning with said input text.
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
+            override fun onQueryTextSubmit(cityName: String?): Boolean {
                 return false
             }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (!newText.isNullOrEmpty()) {
+            override fun onQueryTextChange(cityName: String?): Boolean {
+                if (!cityName.isNullOrEmpty()) {
                     lifecycleScope.launch {
-                        weatherViewModel.findCitiesStartingWith(newText)
+                        weatherViewModel.findCitiesStartingWith(cityName)
                     }
                     binding.searchListView.visibility = View.VISIBLE
                 } else {
@@ -85,19 +91,45 @@ class MainFragment : Fragment() {
                 return true
             }
         })
-
+        // Action to be done when listView item is selected
         binding.searchListView.setOnItemClickListener { _, _, position, _ ->
-            val selectedItem = searchListAdapter.getItem(position).toString()
-            binding.searchView.setQuery(selectedItem, true)
-            binding.searchListView.visibility = View.GONE
+            lifecycleScope.launch {
+                searchListItemSelected(position)
+            }
+            clearSelectedSearchView()
         }
+    }
 
+    /**
+     * Removes the view from being selected
+     */
+    private fun clearSelectedSearchView() {
+        binding.searchView.setQuery("", false)
+        binding.searchView.clearFocus()
+        binding.searchView.isIconified = true
+    }
+
+    /**
+     * Requests data related to the searched city weather
+     */
+    private suspend fun searchListItemSelected(position: Int = 0) {
+        val selectedItem = searchListAdapter.getItem(position).toString()
+        binding.searchView.setQuery(selectedItem, true)
+        binding.searchListView.visibility = View.GONE
+        //todo make the call to update the data
+        weatherViewModel.findCityWeatherByName(selectedItem)
+    }
+
+    private fun initializeSearchAdapter() {
+        //todo make it modular. Set initial array empty
+        searchListAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, mutableListOf())
+        binding.searchListView.adapter = searchListAdapter
     }
 
     /**
      * Setup text Switchers
      */
-    private fun setQqueryFocusListener() {
+    private fun setQueryFocusListener() {
         binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
             binding.tvSearchedCity.isVisible = !hasFocus
         }
@@ -193,10 +225,6 @@ class MainFragment : Fragment() {
 
         lifecycleScope.launch {
             weatherViewModel.cityList.collect {
-                Log.i("MainFragment", "ZZZZ weatherViewModel.searchedCityText=${weatherViewModel.searchedCityText}, " +
-                        "t1=${it.data},}")
-                Log.i("MainFragment", "text=${weatherViewModel.searchedCityText}")
-                Log.i("MainFragment", "t2=${weatherViewModel.requestedList.toList()}")
                 withContext(Dispatchers.Main) {
                     searchListAdapter.clear()
                     weatherViewModel.requestedList.toList().let { data -> searchListAdapter.addAll(data) }

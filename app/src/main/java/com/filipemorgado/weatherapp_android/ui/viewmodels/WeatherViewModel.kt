@@ -51,6 +51,7 @@ class WeatherViewModel(
         // Request data from OpenWeather API
         //todo make it the saved city data to be requested
         viewModelScope.launch(Dispatchers.IO) {
+            //todo remove later
             val currentWeatherDeferred = async { findCityWeatherByName("Paris") }
             val forecastDeferred = async { getCityNextDaysForecast("Paris") }
 
@@ -64,7 +65,7 @@ class WeatherViewModel(
     /**
      * Gets the current weather by city name
      */
-    private suspend fun findCityWeatherByName(cityName: String) = withContext(Dispatchers.IO) {
+    suspend fun findCityWeatherByName(cityName: String) = withContext(Dispatchers.IO) {
         //todo demonstrate a loading while requesting
         val result = weatherRepository.findCityWeatherByName(cityName)
         if(result.isFailure) {
