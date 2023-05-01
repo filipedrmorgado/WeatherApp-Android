@@ -10,7 +10,11 @@ import com.filipemorgado.weatherapp_android.data.model.response.NextDaysForecast
 import com.filipemorgado.weatherapp_android.data.model.response.RealtimeForecastDataResponse
 import com.filipemorgado.weatherapp_android.data.repositories.CitiesDataRepository
 import com.filipemorgado.weatherapp_android.data.repositories.WeatherRepository
+import com.filipemorgado.weatherapp_android.data.sharedpreferences.SharedPreferencesHelper
 import com.filipemorgado.weatherapp_android.utils.DEFAULT_CITY
+import com.filipemorgado.weatherapp_android.utils.SHARED_PREF_LATEST_CURRENT_WEATHER
+import com.filipemorgado.weatherapp_android.utils.SHARED_PREF_LATEST_FORECAST_WEATHER
+import com.filipemorgado.weatherapp_android.utils.SHARED_PREF_LATEST_REQUESTED_CITY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,22 +25,16 @@ import kotlinx.coroutines.withContext
 class WeatherViewModel(
     private val weatherRepository: WeatherRepository,
     private val citiesDataRepository: CitiesDataRepository,
+    private val sharedPreferencesHelper: SharedPreferencesHelper,
     ) : ViewModel() {
 
-    // Flow that keeps up to date the state of the current weather request and its result, success or error.
-    private val _currentWeatherFlow = MutableSharedFlow<RealtimeForecastDataResponse>()
-    val currentWeatherFlow = _currentWeatherFlow.asSharedFlow()
+    // Flow that keeps up to date the state of the current weather data.
+    private var _currentWeather = MutableLiveData<RealtimeForecastDataResponse>()
+    val currentWeather: LiveData<RealtimeForecastDataResponse> = _currentWeather
 
-    private val _forecastWeatherFlow = MutableSharedFlow<NextDaysForecastResponse>()
-    val forecastWeatherFlow = _forecastWeatherFlow.asSharedFlow()
-
-    private var _currentWeather: RealtimeForecastDataResponse? = null
-    val currentWeather: RealtimeForecastDataResponse?
-        get() = _currentWeather
-
-    private var _forecastWeather: NextDaysForecastResponse? = null
-    val forecastWeather: NextDaysForecastResponse?
-        get() = _forecastWeather
+    // Flow that keeps up to date the state of the forecast requested weather data.
+    private var _forecastWeather = MutableLiveData<NextDaysForecastResponse>()
+    val forecastWeather: LiveData<NextDaysForecastResponse> = _forecastWeather
 
     // Cities related data
     private val _cityList = MutableSharedFlow<GeoDBCitiesResponse>()
@@ -55,11 +53,39 @@ class WeatherViewModel(
     val errorOccurredEvent: LiveData<String> = _errorOccurredEvent
 
     init {
-        //todo make it the saved city data to be requested
+        // Updates with the latest saved requested data.
+        setInitialData()
+    }
+
+    /**
+     * Sets the user initial data to be displayed when opening the app
+     */
+    private fun setInitialData() {
+        val latestCurrentWeatherForecast = sharedPreferencesHelper.getObject(
+            SHARED_PREF_LATEST_CURRENT_WEATHER, RealtimeForecastDataResponse::class.java)
+        val latestNextDaysForecast = sharedPreferencesHelper.getObject(
+            SHARED_PREF_LATEST_FORECAST_WEATHER, NextDaysForecastResponse::class.java)
+        val latestRequestedCity = sharedPreferencesHelper.getObject(
+            SHARED_PREF_LATEST_REQUESTED_CITY, String::class.java)
+
+        // We should have all the data or none.
+        if(latestCurrentWeatherForecast != null && latestNextDaysForecast != null && latestRequestedCity != null) {
+            _currentWeather.value = latestCurrentWeatherForecast as RealtimeForecastDataResponse
+            _forecastWeather.value = latestNextDaysForecast as NextDaysForecastResponse
+            _currentCityToBeDisplayed.value = latestRequestedCity as String
+        }else{
+            makeDefaultDataRequest()
+        }
+    }
+
+    /**
+     * Makes a default data request based on user location if no previous data exists
+     */
+    private fun makeDefaultDataRequest() {
+        //todo Default request based on location
         viewModelScope.launch(Dispatchers.IO) {
-            //todo remove later
-            val currentWeatherDeferred = async { findCityWeatherByName(DEFAULT_CITY) }
-            val forecastDeferred = async { getCityNextDaysForecast(DEFAULT_CITY) }
+            val currentWeatherDeferred = viewModelScope.async { findCityWeatherByName(DEFAULT_CITY) }
+            val forecastDeferred = viewModelScope.async { getCityNextDaysForecast(DEFAULT_CITY) }
             //  Ensures that the shared flows _currentWeatherFlow and _forecastWeatherFlow are both updated
             //  with the latest data before the UI can start observing them.
             currentWeatherDeferred.await()
@@ -84,9 +110,8 @@ class WeatherViewModel(
         // Trigger observers
         withContext(Dispatchers.Main) {
             _currentCityToBeDisplayed.value = cityName
+            _currentWeather.value = result.getOrNull()
         }
-        _currentWeatherFlow.emit(responseData)
-        _currentWeather = result.getOrNull()
     }
 
     /**
@@ -102,8 +127,9 @@ class WeatherViewModel(
             return@withContext
         }
         // Trigger observers
-        _forecastWeatherFlow.emit(responseData)
-        _forecastWeather = result.getOrNull()
+        withContext(Dispatchers.Main) {
+            _forecastWeather.value = result.getOrNull()
+        }
     }
 
 

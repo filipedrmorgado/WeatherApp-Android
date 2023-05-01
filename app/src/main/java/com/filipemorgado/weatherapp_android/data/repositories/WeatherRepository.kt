@@ -5,18 +5,21 @@ import com.filipemorgado.weatherapp_android.data.model.response.NextDaysForecast
 import com.filipemorgado.weatherapp_android.data.model.response.RealtimeForecastDataResponse
 import com.filipemorgado.weatherapp_android.data.network.SafeApiRequest
 import com.filipemorgado.weatherapp_android.data.network.WeatherDataApiInterface
-import com.filipemorgado.weatherapp_android.utils.ApiException
-import com.filipemorgado.weatherapp_android.utils.NoInternetException
+import com.filipemorgado.weatherapp_android.data.sharedpreferences.SharedPreferencesHelper
+import com.filipemorgado.weatherapp_android.utils.*
+
 
 class WeatherRepository(
     private val api: WeatherDataApiInterface,
+    private val sharedPreferencesHelper: SharedPreferencesHelper,
 ) : SafeApiRequest() {
 
     suspend fun findCityWeatherByName(cityName: String): Result<RealtimeForecastDataResponse> {
         return try {
             val result = apiRequest { api.findCityWeatherData(cityName = cityName) }
+            sharedPreferencesHelper.saveObject(SHARED_PREF_LATEST_CURRENT_WEATHER, result)
+            sharedPreferencesHelper.saveObject(SHARED_PREF_LATEST_REQUESTED_CITY, cityName)
             Log.d("WeatherRepository", "findCityWeatherByName: result=$result")
-
             // Request was successful
             return Result.success(result)
         } catch (e: ApiException) {
@@ -34,9 +37,8 @@ class WeatherRepository(
     suspend fun getCityNextDaysForecast(cityName: String): Result<NextDaysForecastResponse> {
         return try {
             val result = apiRequest { api.getCityNextDaysForecast(cityName = cityName) }
+            sharedPreferencesHelper.saveObject(SHARED_PREF_LATEST_FORECAST_WEATHER, result)
             Log.d("WeatherRepository", "getCityNextDaysForecast: result=$result")
-
-
             // Request was successful
             return Result.success(result)
         } catch (e: ApiException) {

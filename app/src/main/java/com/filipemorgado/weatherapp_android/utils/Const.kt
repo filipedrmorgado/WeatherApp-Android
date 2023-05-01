@@ -18,5 +18,11 @@ const val LINE_CHART_CIRCLE_RADIUS = 7F
 const val LINE_CHART_DATASET_DESCRIPTION_TEXT_SIZE = 12F
 const val LINE_CHART_ANIMATION_TIME = 1000
 
+// Shared preferences
+const val SHARED_PREF_LATEST_CURRENT_WEATHER = "latestCurrentWeatherForecast"
+const val SHARED_PREF_LATEST_FORECAST_WEATHER = "latestNextDaysForecast"
+const val SHARED_PREF_LATEST_REQUESTED_CITY = "latestRequestedCity"
+
 //todo list
 // check the order of time on details bottom sheet
+// Review logic when retrieving data from repo. Just return the result on the wanted object, without response.

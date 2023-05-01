@@ -194,7 +194,7 @@ class MainFragment : Fragment() {
                     showToastToUser(getString(R.string.no_data_for_day_cards))
                     return
                 }
-                val dataToBeSent = weatherViewModel.forecastWeather?.forecast?.forecastday?.get(position)
+                val dataToBeSent = weatherViewModel.forecastWeather.value?.forecast?.forecastday?.get(position)
                 val colorToBeSet = getColorBasedOnIndex(position)
                 launchBottomSheetDialog(dataToBeSent, colorToBeSet)
             }
@@ -214,20 +214,17 @@ class MainFragment : Fragment() {
      * Observe changes in order to update the screen data
      */
     private fun setupObservers() {
-        lifecycleScope.launch {
-            weatherViewModel.currentWeatherFlow.collect {
-                val detailsDataClass = CurrentWeatherDetails(it.current.tempC, it.current.humidity, it.current.windKph,it.current.condition.text, it.current.condition.code)
-                currentWeatherUpdate(detailsDataClass)
-                showToastToUser(getString(R.string.weather_updated_with_city_name, weatherViewModel.currentCityToBeDisplayed.value))
-                Log.i("MainFragment", "setupObservers: Received Current Weather Data to Update.")
-            }
+
+        weatherViewModel.currentWeather.observe(viewLifecycleOwner) {
+            val detailsDataClass = CurrentWeatherDetails(it.current.tempC, it.current.humidity, it.current.windKph,it.current.condition.text, it.current.condition.code)
+            currentWeatherUpdate(detailsDataClass)
+            showToastToUser(getString(R.string.weather_updated_with_city_name, weatherViewModel.currentCityToBeDisplayed.value))
+            Log.i("MainFragment", "setupObservers: Received Current Weather Data to Update.")
         }
 
-        lifecycleScope.launch {
-            weatherViewModel.forecastWeatherFlow.collect {
-                forecastWeatherUpdate(it)
-                Log.i("MainFragment", "setupObservers: Received Forecast Weather Data to Update.")
-            }
+        weatherViewModel.forecastWeather.observe(viewLifecycleOwner) {
+            forecastWeatherUpdate(it)
+            Log.i("MainFragment", "setupObservers: Received Forecast Weather Data to Update.")
         }
 
         lifecycleScope.launch {
@@ -246,7 +243,7 @@ class MainFragment : Fragment() {
 
         binding.contentMainLayout.todayMaterialCard.setOnClickListener {
             lifecycleScope.launch {
-                val dataToBeSent = weatherViewModel.forecastWeather?.forecast?.forecastday?.get(0)
+                val dataToBeSent = weatherViewModel.forecastWeather.value?.forecast?.forecastday?.get(0)
                 val colorToBeSet = ContextCompat.getColor(requireContext(),R.color.material_blue)
                 launchBottomSheetDialog(dataToBeSent, colorToBeSet)
             }
@@ -268,7 +265,7 @@ class MainFragment : Fragment() {
     }
 
     private fun onTodaySelectorClick() {
-        val currentData = weatherViewModel.currentWeather?.current ?: return
+        val currentData = weatherViewModel.currentWeather.value?.current ?: return
         val detailsDataClass = CurrentWeatherDetails(currentData.tempC, currentData.humidity, currentData.windKph, currentData.condition.text, currentData.condition.code)
         currentWeatherUpdate(detailsDataClass)
         // Updates UI
@@ -282,7 +279,7 @@ class MainFragment : Fragment() {
     }
 
     private fun onTomorrowSelectorClick() {
-        val tomorrowData = weatherViewModel.forecastWeather?.forecast?.forecastday?.get(1)?.day ?: return
+        val tomorrowData = weatherViewModel.forecastWeather.value?.forecast?.forecastday?.get(1)?.day ?: return
         val detailsDataClass = CurrentWeatherDetails(tomorrowData.avgtemp_c, tomorrowData.avghumidity.toInt(), tomorrowData.maxwind_kph,tomorrowData.condition.text, tomorrowData.condition.code)
         currentWeatherUpdate(detailsDataClass)
         // Updates UI

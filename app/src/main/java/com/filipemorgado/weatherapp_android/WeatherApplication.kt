@@ -6,6 +6,7 @@ import com.filipemorgado.weatherapp_android.data.network.NetworkConnectionInterc
 import com.filipemorgado.weatherapp_android.data.network.WeatherDataApiInterface
 import com.filipemorgado.weatherapp_android.data.repositories.CitiesDataRepository
 import com.filipemorgado.weatherapp_android.data.repositories.WeatherRepository
+import com.filipemorgado.weatherapp_android.data.sharedpreferences.SharedPreferencesHelper
 import com.filipemorgado.weatherapp_android.ui.viewmodelfactory.WeatherViewModelFactory
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -24,10 +25,13 @@ class WeatherApplication : Application(), KodeinAware {
         bind() from singleton { WeatherDataApiInterface(instance()) }
         bind() from singleton { CitiesDataApiInterface(instance()) }
         // Repositories
-        bind() from singleton { WeatherRepository(instance() /*instance()*/) }
+        bind() from singleton { WeatherRepository(instance(), instance()) }
         bind() from singleton { CitiesDataRepository(instance() /*instance()*/) }
 
-        bind() from provider { WeatherViewModelFactory(instance(), instance()) }
+        // Shared Preferences
+        bind() from singleton { SharedPreferencesHelper(instance()) }
+
+        bind() from provider { WeatherViewModelFactory(instance(), instance(), instance()) }
         //bind() from provider { WeatherDatabase(instance()) }
     }
 }
