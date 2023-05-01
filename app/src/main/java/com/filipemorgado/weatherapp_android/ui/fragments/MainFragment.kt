@@ -61,6 +61,60 @@ class MainFragment : Fragment() {
         setupInitialButtonSelectorUI()
     }
 
+    /**
+     * Observe changes in order to update the screen data
+     */
+    private fun setupObservers() {
+        weatherViewModel.currentWeather.observe(viewLifecycleOwner) {
+            val detailsDataClass = CurrentWeatherDetails(it.current.tempC, it.current.humidity, it.current.windKph,it.current.condition.text, it.current.condition.code)
+            currentWeatherUpdate(detailsDataClass)
+            showToastToUser(getString(R.string.weather_updated_with_city_name, weatherViewModel.currentCityToBeDisplayed.value))
+            Log.i("MainFragment", "setupObservers: Received Current Weather Data to Update.")
+        }
+
+        weatherViewModel.forecastWeather.observe(viewLifecycleOwner) {
+            forecastWeatherUpdate(it)
+            Log.i("MainFragment", "setupObservers: Received Forecast Weather Data to Update.")
+        }
+
+        lifecycleScope.launch {
+            weatherViewModel.cityList.collect {
+                withContext(Dispatchers.Main) {
+                    searchListAdapter.clear()
+                    weatherViewModel.requestedList.toList().let { data -> searchListAdapter.addAll(data) }
+                    searchListAdapter.notifyDataSetChanged()
+                }
+            }
+        }
+
+        weatherViewModel.currentCityToBeDisplayed.observe(viewLifecycleOwner) {
+            binding.tvSearchedCity.text = it
+        }
+
+        binding.contentMainLayout.todayMaterialCard.setOnClickListener {
+            lifecycleScope.launch {
+                val dataToBeSent = weatherViewModel.forecastWeather.value?.forecast?.forecastday?.get(0)
+                val colorToBeSet = ContextCompat.getColor(requireContext(),R.color.material_blue)
+                launchBottomSheetDialog(dataToBeSent, colorToBeSet)
+            }
+        }
+
+        binding.contentMainLayout.currentWeatherSelector.todaySelector.setOnClickListener {
+            onTodaySelectorClick()
+        }
+        binding.contentMainLayout.currentWeatherSelector.tomorrowSelector.setOnClickListener {
+            onTomorrowSelectorClick()
+        }
+        binding.contentMainLayout.currentWeatherSelector.nextWeekSelector.setOnClickListener {
+            onNextWeekSelectorClick()
+        }
+
+        weatherViewModel.errorOccurredEvent.observe(viewLifecycleOwner) {
+            showToastToUser(it)
+        }
+    }
+
+    // Search view region start
     private fun setupSearchQuery() {
         setQueryFocusListener()
         initializeSearchAdapter()
@@ -127,13 +181,15 @@ class MainFragment : Fragment() {
     }
 
     /**
-     * Setup text Switchers
+     * Setup query search view listener
      */
     private fun setQueryFocusListener() {
         binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
             binding.tvSearchedCity.isVisible = !hasFocus
         }
     }
+
+    // Search view region end
 
     private fun setupInitialButtonSelectorUI() {
         val color = ContextCompat.getColor(requireContext(),R.color.button_background_grey)
@@ -210,59 +266,7 @@ class MainFragment : Fragment() {
         return ContextCompat.getColor(binding.root.context, colorInfo)
     }
 
-    /**
-     * Observe changes in order to update the screen data
-     */
-    private fun setupObservers() {
-
-        weatherViewModel.currentWeather.observe(viewLifecycleOwner) {
-            val detailsDataClass = CurrentWeatherDetails(it.current.tempC, it.current.humidity, it.current.windKph,it.current.condition.text, it.current.condition.code)
-            currentWeatherUpdate(detailsDataClass)
-            showToastToUser(getString(R.string.weather_updated_with_city_name, weatherViewModel.currentCityToBeDisplayed.value))
-            Log.i("MainFragment", "setupObservers: Received Current Weather Data to Update.")
-        }
-
-        weatherViewModel.forecastWeather.observe(viewLifecycleOwner) {
-            forecastWeatherUpdate(it)
-            Log.i("MainFragment", "setupObservers: Received Forecast Weather Data to Update.")
-        }
-
-        lifecycleScope.launch {
-            weatherViewModel.cityList.collect {
-                withContext(Dispatchers.Main) {
-                    searchListAdapter.clear()
-                    weatherViewModel.requestedList.toList().let { data -> searchListAdapter.addAll(data) }
-                    searchListAdapter.notifyDataSetChanged()
-                }
-            }
-        }
-
-        weatherViewModel.currentCityToBeDisplayed.observe(viewLifecycleOwner) {
-            binding.tvSearchedCity.text = it
-        }
-
-        binding.contentMainLayout.todayMaterialCard.setOnClickListener {
-            lifecycleScope.launch {
-                val dataToBeSent = weatherViewModel.forecastWeather.value?.forecast?.forecastday?.get(0)
-                val colorToBeSet = ContextCompat.getColor(requireContext(),R.color.material_blue)
-                launchBottomSheetDialog(dataToBeSent, colorToBeSet)
-            }
-        }
-
-        binding.contentMainLayout.currentWeatherSelector.todaySelector.setOnClickListener {
-            onTodaySelectorClick()
-        }
-        binding.contentMainLayout.currentWeatherSelector.tomorrowSelector.setOnClickListener {
-            onTomorrowSelectorClick()
-        }
-        binding.contentMainLayout.currentWeatherSelector.nextWeekSelector.setOnClickListener {
-            onNextWeekSelectorClick()
-        }
-
-        weatherViewModel.errorOccurredEvent.observe(viewLifecycleOwner) {
-            showToastToUser(it)
-        }
-    }
+    // Days selector region start
 
     private fun onTodaySelectorClick() {
         val currentData = weatherViewModel.currentWeather.value?.current ?: return
@@ -298,6 +302,8 @@ class MainFragment : Fragment() {
         showToastToUser(getString(R.string.not_implemented_yet))
     }
 
+    // Days selector region end
+
     /**
      * Launches the BottomSheetDialog with the necessary data
      */
@@ -316,6 +322,9 @@ class MainFragment : Fragment() {
         }
     }
 
+    /**
+     * Updates main view with current weather data
+     */
     private fun currentWeatherUpdate(data: CurrentWeatherDetails) {
         Log.i("MainFragment", "currentWeatherUpdate: Data updated on the screen")
         // Setup data on screen
@@ -332,20 +341,20 @@ class MainFragment : Fragment() {
     }
 
     /**
-     * Displays a notification to the user
-     */
-    private fun showToastToUser(textToDisplay: String) {
-        Toast.makeText(context, textToDisplay, Toast.LENGTH_LONG).show()
-    }
-
-    /**
-     * Updates recycler forecast data
+     * Updates recycler with forecast data
      */
     private fun forecastWeatherUpdate(resultData: NextDaysForecastResponse) {
         //todo This is duplicated for the sake of displaying what it would like with a 6 day forecast.
         // Currently, we can only have the current day and next 2 days data correctly.
         val duplicatedList = resultData.forecast.forecastday + resultData.forecast.forecastday
         multipleDaysRecyclerView.setData(duplicatedList)
+    }
+
+    /**
+     * Displays a notification to the user
+     */
+    private fun showToastToUser(textToDisplay: String) {
+        Toast.makeText(context, textToDisplay, Toast.LENGTH_LONG).show()
     }
 }
 
