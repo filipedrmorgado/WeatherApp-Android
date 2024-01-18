@@ -1,6 +1,6 @@
 # Weather app
 
-Please take into account this was a fast paced, simple MVVM weather app creation with everything below mentioned used, to display the weather in a simple way following the weather app designed provided.
+Please take into account this was a fast paced, simple MVVM weather app creation with everything below mentioned used, to display the weather in a clean way following the weather app designed provided.
 
 If you want to take a look into a more structed codebase, with better practices uses and overwall more quality, please consider taking a look at: 
 
