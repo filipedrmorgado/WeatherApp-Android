@@ -1,11 +1,24 @@
 # Weather app
 
+Please take into account this was a fast paced, simple MVVM weather app creation with everything below mentioned used, to display the weather in a simple way following the weather app designed provided.
+
+If you want to take a look into a more structed codebase, with better practices uses and overwall more quality, please consider taking a look at: 
+
+### Lightning Money: 
+https://github.com/filipedrmorgado/LightningMoney
+
+-An Android application for managing a Lightning Network Bitcoin wallet, showcasing its speed and efficiency as a proof-of-concept, highlighting its potential for rapid and cost-effective transactions. More details on the repo.
+
 **Preview**
 
-// Yet to be displayed
-<p align="center"><img src="images/image1.jpg" /></p>
+<div align="center">
+  <img src="images/screenshot_1.png?raw=true" width="300" height="700" alt="Image 1">
+  &nbsp;&nbsp;&nbsp; <!-- Add more "&nbsp;" as needed for spacing -->
+  <img src="images/screenshot_2.png?raw=true" width="300" height="700" alt="Image 2">
+  &nbsp;&nbsp;&nbsp;
+  <img src="images/screenshot_3.png?raw=true" width="300" height="700" alt="Image 3">
+</div>
 
-![Uploading screenshot_1.png…]()
 
 **Required to run it**
 - Android studio
@@ -24,11 +37,6 @@
 - Koin dependency injection
 - Use Shared Preferences for storage
 
-**Screenshot**
-
-// Yet to be displayed
-<p align="center"><img src="" /></p>
-
 **Libraries & Dependencies**
 - [Support libraries]: appcompat / recyclerview / constraintlayout
 - [Material Design 2]: MaterialCardView / MaterialButton / Bottom App Bars / ExtendedFloatingActionButton
@@ -42,7 +50,7 @@
 
 **Credit**
 
-### This app inspired from [Weather App Freebie] concept Designed by [Raman Yv] 
+### This app was inspired from [Weather App Freebie] concept Designed by [Raman Yv] 
 
 # License
 
